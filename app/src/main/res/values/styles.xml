@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base app theme -->
+    <style name="Theme.HangOut" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/purple_main</item>
+        <item name="colorPrimaryVariant">@color/purple_dark</item>
+        <item name="colorAccent">@color/purple_main</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+    </style>
+
+    <!-- TextInputLayout — dark outlined style matching the web app inputs -->
+    <style name="HangOutInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/input_bg</item>
+        <item name="boxStrokeColor">@color/input_border</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="hintTextColor">@color/text_muted</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="boxStrokeErrorColor">@color/red_accent</item>
+        <item name="errorTextColor">@color/red_accent</item>
+        <item name="passwordToggleTint">@color/text_muted</item>
+        <item name="android:editTextColor">@color/text_primary</item>
+    </style>
+
+    <!-- Disabled variant for email field in Edit Profile -->
+    <style name="HangOutInputLayoutDisabled" parent="HangOutInputLayout">
+        <item name="boxStrokeColor">@color/divider</item>
+        <item name="boxBackgroundColor">#0DFFFFFF</item>
+    </style>
+
+</resources>

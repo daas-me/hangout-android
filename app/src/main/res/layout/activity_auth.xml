@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0A18">
+
+    <!-- Purple glow — top center/right -->
+    <View
+        android:layout_width="380dp"
+        android:layout_height="380dp"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="-80dp"
+        android:layout_marginEnd="-80dp"
+        android:background="@drawable/glow_purple"
+        android:alpha="0.85" />
+
+    <!-- Pink glow — mid left -->
+    <View
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginBottom="80dp"
+        android:layout_marginStart="-60dp"
+        android:background="@drawable/glow_pink"
+        android:alpha="0.6" />
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="52dp"
+            android:paddingBottom="40dp">
+
+            <!-- Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/auth_card_bg"
+                android:padding="28dp">
+
+                <!-- Gradient HangOut -->
+                <com.hangout.app.ui.custom.GradientTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:text="HangOut"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:textFontWeight="800"
+                    android:fontFamily="@font/syne_extrabold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="24dp"
+                    android:text="Discover and host local events. Connect&#10;with your community, one hangout at a time."
+                    android:textAlignment="center"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="#99C4C0DD"
+                    android:fontFamily="@font/dm_sans" />
+
+                <!-- Dots -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="28dp"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/dot1"
+                        android:layout_width="7dp"
+                        android:layout_height="8dp"
+                        android:layout_marginEnd="6dp"
+                        android:background="@drawable/dot_active" />
+                    <View
+                        android:id="@+id/dot2"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot_inactive" android:layout_marginEnd="6dp"/>
+                    <View
+                        android:id="@+id/dot3"
+                        android:layout_width="8dp" android:layout_height="8dp"
+                        android:background="@drawable/dot_inactive"/>
+                </LinearLayout>
+
+                <!-- Tabs -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/tab_container_bg"
+                    android:layout_marginBottom="28dp"
+                    android:padding="4dp">
+                    <Button
+                        android:id="@+id/btnTabSignIn"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:text="Sign In"
+                        android:textSize="15sp" android:textColor="@color/white"
+                        android:fontFamily="@font/syne_bold"
+                        android:background="@drawable/tab_active_bg"
+                        android:stateListAnimator="@null" />
+                    <Button
+                        android:id="@+id/btnTabRegister"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:text="Register"
+                        android:textSize="15sp" android:textColor="@color/text_muted"
+                        android:fontFamily="@font/dm_sans"
+                        android:background="@android:color/transparent"
+                        android:stateListAnimator="@null" />
+                </LinearLayout>
+
+                <!-- Error -->
+                <TextView
+                    android:id="@+id/tvError"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:visibility="gone" android:background="@drawable/error_bg"
+                    android:padding="12dp" android:textSize="13sp"
+                    android:textColor="#F87171" android:fontFamily="@font/dm_sans"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- ══ SIGN IN FORM ══ -->
+                <LinearLayout
+                    android:id="@+id/layoutSignInForm"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:visibility="visible">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Welcome back" android:textSize="26sp" android:textStyle="bold"
+                        android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="4dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Sign in to your HangOut account" android:textSize="14sp"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="24dp" />
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="EMAIL" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilSignInEmail"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSignInEmail"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:inputType="textEmailAddress" android:hint="juan@example.com"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="PASSWORD" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilSignInPassword"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="28dp"
+                        app:passwordToggleEnabled="true" style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etSignInPassword"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:inputType="textPassword" android:hint="••••••••"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnSignIn"
+                        android:layout_width="match_parent" android:layout_height="56dp"
+                        android:text="Sign In →" android:textSize="16sp"
+                        android:textColor="@color/white" android:fontFamily="@font/syne_bold"
+                        android:background="@drawable/btn_gradient" android:stateListAnimator="@null" />
+                </LinearLayout>
+
+                <!-- ══ REGISTER FORM ══ -->
+                <LinearLayout
+                    android:id="@+id/layoutRegisterForm"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:visibility="gone">
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Create account" android:textSize="26sp" android:textStyle="bold"
+                        android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="4dp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Join the HangOut community today" android:textSize="14sp"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="24dp" />
+
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:layout_marginBottom="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical" android:layout_marginEnd="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="FIRST NAME" android:textSize="11sp" android:letterSpacing="0.1"
+                                android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                                android:layout_marginBottom="6dp" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                style="@style/HangOutInputLayout">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etFirstName"
+                                    android:layout_width="match_parent" android:layout_height="56dp"
+                                    android:inputType="textPersonName" android:hint="Juan"
+                                    android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="8dp">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="LAST NAME" android:textSize="11sp" android:letterSpacing="0.1"
+                                android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                                android:layout_marginBottom="6dp" />
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                style="@style/HangOutInputLayout">
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/etLastName"
+                                    android:layout_width="match_parent" android:layout_height="56dp"
+                                    android:inputType="textPersonName" android:hint="Dela Cruz"
+                                    android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="EMAIL" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRegisterEmail"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:inputType="textEmailAddress" android:hint="juan@example.com"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="BIRTHDATE" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilBirthdate"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_calendar"
+                        app:endIconTint="@color/text_muted"
+                        style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etBirthdate"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:hint="MM/DD/YYYY" android:focusable="false" android:clickable="true"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="PASSWORD" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        app:passwordToggleEnabled="true" style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etRegisterPassword"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:inputType="textPassword" android:hint="••••••••"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="CONFIRM PASSWORD" android:textSize="11sp" android:letterSpacing="0.1"
+                        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
+                        android:layout_marginBottom="6dp" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:layout_marginBottom="28dp"
+                        app:passwordToggleEnabled="true" style="@style/HangOutInputLayout">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etConfirmPassword"
+                            android:layout_width="match_parent" android:layout_height="56dp"
+                            android:inputType="textPassword" android:hint="••••••••"
+                            android:textColor="@color/text_primary" android:fontFamily="@font/dm_sans" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/btnCreateAccount"
+                        android:layout_width="match_parent" android:layout_height="56dp"
+                        android:text="Create Account →" android:textSize="16sp"
+                        android:textColor="@color/white" android:fontFamily="@font/syne_bold"
+                        android:background="@drawable/btn_gradient" android:stateListAnimator="@null" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="@android:style/Widget.ProgressBar.Small"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal" android:layout_marginTop="16dp"
+                    android:visibility="gone" android:indeterminateTint="@color/purple_main"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
