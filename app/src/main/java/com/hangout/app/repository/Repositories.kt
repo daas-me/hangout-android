@@ -57,13 +57,41 @@ class AuthRepository(context: Context) {
 class UserRepository(context: Context) {
     private val api = RetrofitClient.getApiService(context)
 
-    suspend fun getProfile(): Result<UserProfile> {
+    // ── Cache ──────────────────────────────────────────────────────────────
+    private var cachedProfile: UserProfile? = null
+    private var cachedStats: UserStats? = null
+    private var cachedPhoto: String? = null
+    private var lastFetchTime: Long = 0L
+
+    companion object {
+        private const val CACHE_TTL_MS = 5 * 60 * 1000L // 5 minutes
+    }
+
+    private fun isCacheValid() =
+        System.currentTimeMillis() - lastFetchTime < CACHE_TTL_MS
+
+    fun clearCache() {
+        cachedProfile = null
+        cachedStats   = null
+        cachedPhoto   = null
+        lastFetchTime = 0L
+    }
+
+    // ── Profile ────────────────────────────────────────────────────────────
+
+    suspend fun getProfile(forceRefresh: Boolean = false): Result<UserProfile> {
+        if (!forceRefresh && isCacheValid() && cachedProfile != null) {
+            return Result.Success(cachedProfile!!)
+        }
         return try {
             val response = api.getProfile()
-            if (response.isSuccessful && response.body() != null)
-                Result.Success(response.body()!!)
-            else
+            if (response.isSuccessful && response.body() != null) {
+                cachedProfile = response.body()!!
+                lastFetchTime = System.currentTimeMillis()
+                Result.Success(cachedProfile!!)
+            } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to load profile")
+            }
         } catch (e: Exception) {
             Result.Error("Cannot connect to server.")
         }
@@ -72,10 +100,12 @@ class UserRepository(context: Context) {
     suspend fun updateProfile(firstname: String, lastname: String): Result<MessageResponse> {
         return try {
             val response = api.updateProfile(UpdateProfileRequest(firstname, lastname))
-            if (response.isSuccessful)
+            if (response.isSuccessful) {
+                clearCache() // bust full cache so next loadAll re-fetches
                 Result.Success(response.body() ?: MessageResponse("Profile updated"))
-            else
+            } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to update profile")
+            }
         } catch (e: Exception) {
             Result.Error("Cannot connect to server.")
         }
@@ -93,13 +123,39 @@ class UserRepository(context: Context) {
         }
     }
 
-    suspend fun getStats(): Result<UserStats> {
+    // ── Stats ──────────────────────────────────────────────────────────────
+
+    suspend fun getStats(forceRefresh: Boolean = false): Result<UserStats> {
+        if (!forceRefresh && isCacheValid() && cachedStats != null) {
+            return Result.Success(cachedStats!!)
+        }
         return try {
             val response = api.getStats()
-            if (response.isSuccessful && response.body() != null)
-                Result.Success(response.body()!!)
-            else
+            if (response.isSuccessful && response.body() != null) {
+                cachedStats = response.body()!!
+                Result.Success(cachedStats!!)
+            } else {
                 Result.Error("Failed to load stats")
+            }
+        } catch (e: Exception) {
+            Result.Error("Cannot connect to server.")
+        }
+    }
+
+    // ── Photo ──────────────────────────────────────────────────────────────
+
+    suspend fun getPhoto(forceRefresh: Boolean = false): Result<String> {
+        if (!forceRefresh && isCacheValid() && cachedPhoto != null) {
+            return Result.Success(cachedPhoto!!)
+        }
+        return try {
+            val response = api.getPhoto()
+            if (response.isSuccessful && response.body() != null) {
+                cachedPhoto = response.body()!!.photo
+                Result.Success(cachedPhoto!!)
+            } else {
+                Result.Error("No photo")
+            }
         } catch (e: Exception) {
             Result.Error("Cannot connect to server.")
         }
@@ -110,22 +166,12 @@ class UserRepository(context: Context) {
             val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
             val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
             val response = api.uploadPhoto(part)
-            if (response.isSuccessful)
+            if (response.isSuccessful) {
+                cachedPhoto = null // bust only photo cache
                 Result.Success(response.body() ?: MessageResponse("Photo uploaded"))
-            else
+            } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Upload failed")
-        } catch (e: Exception) {
-            Result.Error("Cannot connect to server.")
-        }
-    }
-
-    suspend fun getPhoto(): Result<String> {
-        return try {
-            val response = api.getPhoto()
-            if (response.isSuccessful && response.body() != null)
-                Result.Success(response.body()!!.photo)
-            else
-                Result.Error("No photo")
+            }
         } catch (e: Exception) {
             Result.Error("Cannot connect to server.")
         }
@@ -134,10 +180,12 @@ class UserRepository(context: Context) {
     suspend fun deletePhoto(): Result<MessageResponse> {
         return try {
             val response = api.deletePhoto()
-            if (response.isSuccessful)
+            if (response.isSuccessful) {
+                cachedPhoto = null // bust only photo cache
                 Result.Success(response.body() ?: MessageResponse("Photo removed"))
-            else
+            } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to remove photo")
+            }
         } catch (e: Exception) {
             Result.Error("Cannot connect to server.")
         }
