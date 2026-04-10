@@ -16,7 +16,7 @@ interface ProfileContract {
         fun onPasswordUpdateSuccess()
     }
     interface Presenter {
-        fun loadAll()
+        fun loadAll(forceRefresh: Boolean = false)
         fun updateProfile(firstname: String, lastname: String)
         fun updatePassword(oldPassword: String, newPassword: String)
         fun uploadPhoto(file: File)
