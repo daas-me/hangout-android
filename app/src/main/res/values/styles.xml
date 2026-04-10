@@ -9,6 +9,9 @@
         <item name="android:windowBackground">@color/bg_dark</item>
         <item name="android:statusBarColor">@color/bg_dark</item>
         <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <item name="android:colorBackground">@color/bg_dark</item>
+        <item name="colorBackgroundFloating">@color/card_bg</item>
     </style>
 
     <!-- TextInputLayout — dark outlined style matching the web app inputs -->
@@ -32,6 +35,17 @@
     <style name="HangOutInputLayoutDisabled" parent="HangOutInputLayout">
         <item name="boxStrokeColor">@color/divider</item>
         <item name="boxBackgroundColor">#0DFFFFFF</item>
+    </style>
+
+    <style name="AppBottomSheetDialogTheme" parent="Theme.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppBottomSheetStyle</item>
+    </style>
+
+    <style name="AppBottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
     </style>
 
 </resources>

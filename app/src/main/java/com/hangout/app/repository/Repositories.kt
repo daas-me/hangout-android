@@ -1,5 +1,6 @@
 package com.hangout.app.repository
 
+import android.content.Context
 import com.hangout.app.models.*
 import com.hangout.app.network.RetrofitClient
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -14,8 +15,8 @@ sealed class Result<out T> {
 
 // ── Auth Repository ───────────────────────────────────────────────────────────
 
-class AuthRepository {
-    private val api = RetrofitClient.apiService
+class AuthRepository(context: Context) {
+    private val api = RetrofitClient.getApiService(context)
 
     suspend fun login(email: String, password: String): Result<LoginResponse> {
         return try {
@@ -53,12 +54,12 @@ class AuthRepository {
 
 // ── User Repository ───────────────────────────────────────────────────────────
 
-class UserRepository {
-    private val api = RetrofitClient.apiService
+class UserRepository(context: Context) {
+    private val api = RetrofitClient.getApiService(context)
 
-    suspend fun getProfile(token: String): Result<UserProfile> {
+    suspend fun getProfile(): Result<UserProfile> {
         return try {
-            val response = api.getProfile("Bearer $token")
+            val response = api.getProfile()
             if (response.isSuccessful && response.body() != null)
                 Result.Success(response.body()!!)
             else
@@ -68,9 +69,9 @@ class UserRepository {
         }
     }
 
-    suspend fun updateProfile(token: String, firstname: String, lastname: String): Result<MessageResponse> {
+    suspend fun updateProfile(firstname: String, lastname: String): Result<MessageResponse> {
         return try {
-            val response = api.updateProfile("Bearer $token", UpdateProfileRequest(firstname, lastname))
+            val response = api.updateProfile(UpdateProfileRequest(firstname, lastname))
             if (response.isSuccessful)
                 Result.Success(response.body() ?: MessageResponse("Profile updated"))
             else
@@ -80,9 +81,9 @@ class UserRepository {
         }
     }
 
-    suspend fun updatePassword(token: String, oldPassword: String, newPassword: String): Result<MessageResponse> {
+    suspend fun updatePassword(oldPassword: String, newPassword: String): Result<MessageResponse> {
         return try {
-            val response = api.updatePassword("Bearer $token", UpdatePasswordRequest(oldPassword, newPassword))
+            val response = api.updatePassword(UpdatePasswordRequest(oldPassword, newPassword))
             if (response.isSuccessful)
                 Result.Success(response.body() ?: MessageResponse("Password updated"))
             else
@@ -92,9 +93,9 @@ class UserRepository {
         }
     }
 
-    suspend fun getStats(token: String): Result<UserStats> {
+    suspend fun getStats(): Result<UserStats> {
         return try {
-            val response = api.getStats("Bearer $token")
+            val response = api.getStats()
             if (response.isSuccessful && response.body() != null)
                 Result.Success(response.body()!!)
             else
@@ -104,11 +105,11 @@ class UserRepository {
         }
     }
 
-    suspend fun uploadPhoto(token: String, file: File): Result<MessageResponse> {
+    suspend fun uploadPhoto(file: File): Result<MessageResponse> {
         return try {
             val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
             val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
-            val response = api.uploadPhoto("Bearer $token", part)
+            val response = api.uploadPhoto(part)
             if (response.isSuccessful)
                 Result.Success(response.body() ?: MessageResponse("Photo uploaded"))
             else
@@ -118,9 +119,9 @@ class UserRepository {
         }
     }
 
-    suspend fun getPhoto(token: String): Result<String> {
+    suspend fun getPhoto(): Result<String> {
         return try {
-            val response = api.getPhoto("Bearer $token")
+            val response = api.getPhoto()
             if (response.isSuccessful && response.body() != null)
                 Result.Success(response.body()!!.photo)
             else
@@ -130,9 +131,9 @@ class UserRepository {
         }
     }
 
-    suspend fun deletePhoto(token: String): Result<MessageResponse> {
+    suspend fun deletePhoto(): Result<MessageResponse> {
         return try {
-            val response = api.deletePhoto("Bearer $token")
+            val response = api.deletePhoto()
             if (response.isSuccessful)
                 Result.Success(response.body() ?: MessageResponse("Photo removed"))
             else
