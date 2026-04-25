@@ -1,9 +1,7 @@
 package com.hangout.app.ui.home
 
 import android.content.Context
-import com.hangout.app.models.EventItem
-import com.hangout.app.models.UserProfile
-import com.hangout.app.models.UserStats
+import com.hangout.app.models.*
 import com.hangout.app.network.RetrofitClient
 import com.hangout.app.repository.Result
 import com.hangout.app.repository.UserRepository

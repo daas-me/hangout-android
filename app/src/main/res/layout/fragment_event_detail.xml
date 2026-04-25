@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <!-- ── Scrollable Body ── -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:paddingBottom="88dp"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- ── Hero ── -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="280dp">
+
+                <!-- Hero image -->
+                <ImageView
+                    android:id="@+id/ivEventHero"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Event image" />
+
+                <!-- Gradient overlay -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/hero_gradient_overlay" />
+
+                <!-- Top row: Back + Like/Share -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="20dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/btnBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="← Back"
+                        android:textColor="#F0EEFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:paddingHorizontal="16dp"
+                        android:gravity="center"
+                        android:background="@drawable/btn_back_bg"
+                        android:includeFontPadding="false" />
+
+                    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+
+                    <!-- Like button -->
+                    <ImageButton
+                        android:id="@+id/btnLike"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/btn_glass_bg"
+                        android:src="@drawable/ic_heart_outline"
+                        android:contentDescription="Like"
+                        android:padding="10dp"
+                        android:tint="#F0EEFF"
+                        android:layout_marginEnd="10dp" />
+
+                    <!-- Share button -->
+                    <ImageButton
+                        android:id="@+id/btnShare"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/btn_glass_bg"
+                        android:src="@drawable/ic_share"
+                        android:contentDescription="Share"
+                        android:padding="10dp"
+                        android:tint="#F0EEFF" />
+                </LinearLayout>
+
+                <!-- Bottom: format badge + title -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="24dp">
+
+                    <TextView
+                        android:id="@+id/tvFormatBadge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/badge_format_bg"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="5dp"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp"
+                        tools:text="In-Person" />
+
+                    <TextView
+                        android:id="@+id/tvEventTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:lineSpacingMultiplier="1.15"
+                        tools:text="Buenas Christmas Party" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <!-- ── Body ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Date + Time row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="2"
+                    android:layout_marginBottom="12dp">
+
+                    <!-- Date card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginEnd="6dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_calendar"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Date"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Date"
+                                android:textColor="#8882AA"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvEventDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#F0EEFF"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="Dec 20, 2026" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Time card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginStart="6dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_clock"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Time"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Time"
+                                android:textColor="#8882AA"
+                                android:textSize="11sp" />
+
+                            <TextView
+                                android:id="@+id/tvEventTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="#F0EEFF"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                tools:text="18:00" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Location card -->
+                <LinearLayout
+                    android:id="@+id/cardLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="top"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="2dp"
+                        android:src="@drawable/ic_location"
+                        android:tint="#9D5FF5"
+                        android:contentDescription="Location"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Location"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvEventLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="Waterfront Cebu City Hotel &amp; Casino, Salinas Drive, Cebu City" />
+
+                        <TextView
+                            android:id="@+id/tvOpenMaps"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/btn_maps_bg"
+                            android:drawableStart="@drawable/ic_external_link"
+                            android:drawablePadding="6dp"
+                            android:drawableTint="#A855F7"
+                            android:paddingHorizontal="14dp"
+                            android:paddingVertical="8dp"
+                            android:text="Open in Maps"
+                            android:textColor="#A855F7"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Stats row (Price / Attending / Format / Capacity) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="4"
+                    android:layout_marginBottom="12dp">
+
+                    <!-- Price -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginEnd="3dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_ticket"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Price"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="4dp"
+                            tools:text="₱2000" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Price"
+                            android:textColor="#8882AA"
+                            android:textSize="10sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Attending -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_users"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Attending"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatAttending"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="4dp"
+                            tools:text="0" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Attending"
+                            android:textColor="#8882AA"
+                            android:textSize="10sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Format -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginStart="3dp"
+                        android:layout_marginEnd="3dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_tag"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Format"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatFormat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="4dp"
+                            tools:text="In-Person" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Format"
+                            android:textColor="#8882AA"
+                            android:textSize="10sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+
+                    <!-- Capacity -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/card_dark_bg"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp"
+                        android:layout_marginStart="3dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_users"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Capacity"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatCapacity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="4dp"
+                            tools:text="1000" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Capacity"
+                            android:textColor="#8882AA"
+                            android:textSize="10sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Availability card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Availability"
+                        android:textColor="#F0EEFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/tvAttendingCount"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp"
+                            tools:text="0 attending" />
+
+                        <TextView
+                            android:id="@+id/tvSpotsLeft"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp"
+                            tools:text="1000 spots left" />
+                    </LinearLayout>
+
+                    <!-- Progress bar -->
+                    <ProgressBar
+                        android:id="@+id/progressCapacity"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:progressDrawable="@drawable/capacity_progress"
+                        android:max="100"
+                        android:progress="0" />
+                </LinearLayout>
+
+                <!-- About card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About This Event"
+                        android:textColor="#F0EEFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
+                        android:id="@+id/tvEventDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#C4BFE8"
+                        android:textSize="13sp"
+                        android:lineSpacingMultiplier="1.7"
+                        tools:text="Its our christmas partyyyyy!!" />
+                </LinearLayout>
+
+                <!-- Seating card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="horizontal"
+                    android:padding="16dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_seat"
+                        android:tint="#9D5FF5"
+                        android:contentDescription="Seating"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Seating"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvSeatingType"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="Assigned Seats" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Hosted By card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hosted By"
+                        android:textColor="#F0EEFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="14dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+
+                        <!-- Avatar -->
+                        <FrameLayout
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:layout_marginEnd="14dp">
+
+                            <TextView
+                                android:id="@+id/tvHostInitials"
+                                android:layout_width="52dp"
+                                android:layout_height="52dp"
+                                android:background="@drawable/avatar_gradient_bg"
+                                android:gravity="center"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:textStyle="bold"
+                                tools:text="DA" />
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:id="@+id/tvHostName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="#F0EEFF"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"
+                                    android:layout_marginEnd="6dp"
+                                    tools:text="Dwight Angelo" />
+
+                                <!-- Verified badge -->
+                                <TextView
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:background="@drawable/verified_badge_bg"
+                                    android:gravity="center"
+                                    android:text="✓"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Event Organizer"
+                                android:textColor="#8882AA"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvHostEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#8882AA"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="14dp"
+                        tools:text="host@example.com" />
+
+                    <Button
+                        android:id="@+id/btnMessageHost"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="Message Host"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:background="@drawable/btn_gradient_bg"
+                        app:cornerRadius="12dp" />
+                </LinearLayout>
+
+                <!-- Payment Details card (shown only if paid) -->
+                <LinearLayout
+                    android:id="@+id/cardPayment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_dark_bg"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <!-- Title row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="14dp"
+                        android:layout_marginBottom="14dp"
+                        android:background="@drawable/divider_bottom">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_credit_card"
+                            android:tint="#9D5FF5"
+                            android:contentDescription="Payment"
+                            android:layout_marginEnd="10dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Payment Details"
+                            android:textColor="#F0EEFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Payment Method -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Payment Method"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvPaymentMethod"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            tools:text="Bank Transfer" />
+                    </LinearLayout>
+
+                    <!-- Account Number -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="14dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Account Number"
+                            android:textColor="#8882AA"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tvAccountNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="#F0EEFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:letterSpacing="0.05"
+                            tools:text="1111 2222 3333 4444" />
+                    </LinearLayout>
+
+                    <!-- Note -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="After payment, you'll be asked to upload proof of payment for host approval."
+                        android:textColor="#8882AA"
+                        android:textSize="11sp"
+                        android:lineSpacingMultiplier="1.6"
+                        android:paddingTop="14dp"
+                        android:background="@drawable/divider_top" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ── Sticky RSVP Bar ── -->
+    <LinearLayout
+        android:id="@+id/rsvpBar"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/rsvp_bar_bg"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvRsvpPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#F0EEFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="₱2000" />
+
+            <TextView
+                android:id="@+id/tvRsvpSeats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#8882AA"
+                android:textSize="12sp"
+                tools:text="1000 spots remaining" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnRsvp"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="RSVP Now"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:paddingHorizontal="32dp"
+            android:background="@drawable/btn_rsvp_bg"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
