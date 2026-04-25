@@ -11,6 +11,7 @@ interface HomeContract {
         fun showHostingEvents(events: List<EventItem>)
         fun showTodayEvents(events: List<EventItem>)
         fun showLoading(show: Boolean)
+        fun showError(message: String)
     }
     interface Presenter {
         fun loadAll()

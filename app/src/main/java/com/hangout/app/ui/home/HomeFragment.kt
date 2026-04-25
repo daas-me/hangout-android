@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hangout.app.R
@@ -14,6 +13,7 @@ import com.hangout.app.databinding.ItemEventCardHorizontalBinding
 import com.hangout.app.models.EventItem
 import com.hangout.app.models.UserProfile
 import com.hangout.app.models.UserStats
+import com.hangout.app.utils.toast
 
 class HomeFragment : Fragment(), HomeContract.View {
 
@@ -25,7 +25,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         if (!::presenter.isInitialized) {
-            presenter = HomePresenter(this, requireContext())
+            presenter = HomePresenter(this, HomeModel(requireContext()))
         }
     }
 
@@ -38,17 +38,24 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.loadAll() // no token needed
+        presenter.loadAll()
 
         binding.ivNotifications.setOnClickListener {
-            Toast.makeText(requireContext(), "No new notifications", Toast.LENGTH_SHORT).show()
+            toast("No new notifications")
         }
         binding.tvManageHosting.setOnClickListener {
-            Toast.makeText(requireContext(), "Opening My HangOuts...", Toast.LENGTH_SHORT).show()
+            toast("Opening My HangOuts...")
         }
     }
 
     // ── HomeContract.View ──────────────────────────────────────────────────
+
+    override fun showLoading(show: Boolean) {
+    }
+
+    override fun showError(message: String) {
+        toast(message)
+    }
 
     override fun showProfile(profile: UserProfile) {
         binding.tvUserName.text = "${profile.firstname}!"
@@ -94,7 +101,7 @@ class HomeFragment : Fragment(), HomeContract.View {
         }
     }
 
-    override fun showLoading(show: Boolean) { }
+    // ── Helpers ────────────────────────────────────────────────────────────
 
     private fun bindEventCard(cardBinding: ItemEventCardHorizontalBinding, event: EventItem) {
         cardBinding.tvEventTitle.text    = event.title
@@ -106,7 +113,6 @@ class HomeFragment : Fragment(), HomeContract.View {
             Glide.with(this).load(event.imageUrl).centerCrop().into(cardBinding.ivEventImage)
         }
         cardBinding.root.setOnClickListener {
-            Toast.makeText(requireContext(), event.title, Toast.LENGTH_SHORT).show()
         }
     }
 

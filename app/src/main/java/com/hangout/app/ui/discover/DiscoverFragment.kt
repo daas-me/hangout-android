@@ -14,6 +14,7 @@ import com.hangout.app.R
 import com.hangout.app.databinding.FragmentDiscoverBinding
 import com.hangout.app.databinding.ItemEventCardBinding
 import com.hangout.app.models.EventItem
+import com.hangout.app.utils.toast
 
 class DiscoverFragment : Fragment(), DiscoverContract.View {
 
@@ -25,7 +26,7 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         if (!::presenter.isInitialized) {
-            presenter = DiscoverPresenter(this, requireContext())
+            presenter = DiscoverPresenter(this, DiscoverModel(requireContext()))
         }
     }
 
@@ -38,7 +39,7 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.loadEvents() // no token needed
+        presenter.loadEvents()
 
         binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -52,39 +53,51 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
 
     // ── DiscoverContract.View ──────────────────────────────────────────────
 
+    override fun showLoading(show: Boolean) {
+    }
+
+    override fun showError(message: String) {
+        toast(message)
+        showEvents(emptyList())
+    }
+
     override fun showEvents(events: List<EventItem>) {
         binding.layoutDiscoverEventsContainer.removeAllViews()
         if (events.isEmpty()) {
-            val empty = TextView(requireContext()).apply {
-                text = "No events found. Try a different search."
-                setTextColor(resources.getColor(R.color.text_muted, null))
-                textSize = 14f
-                gravity = Gravity.CENTER
-                setPadding(0, 48, 0, 48)
-            }
-            binding.layoutDiscoverEventsContainer.addView(empty)
+            binding.layoutDiscoverEventsContainer.addView(emptyText())
             return
         }
         events.forEach { event ->
             val card = ItemEventCardBinding.inflate(
                 layoutInflater, binding.layoutDiscoverEventsContainer, false
             )
-            card.tvEventTitle.text    = event.title
-            card.tvEventDateTime.text = "${event.date ?: ""} • ${event.time ?: ""}"
-            card.tvEventLocation.text = event.location ?: "—"
-            card.tvEventPrice.text    = if ((event.price ?: 0.0) == 0.0) "FREE" else "₱${event.price?.toInt()}"
-            card.tvEventFormat.text   = event.format ?: "In-Person"
-            if (!event.imageUrl.isNullOrBlank()) {
-                Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
-            }
+            bindEventCard(card, event)
             binding.layoutDiscoverEventsContainer.addView(card.root)
         }
     }
 
-    override fun showLoading(show: Boolean) { }
+    // ── Helpers ────────────────────────────────────────────────────────────
 
-    override fun showError(message: String) {
-        showEvents(emptyList())
+    private fun bindEventCard(card: ItemEventCardBinding, event: EventItem) {
+        card.tvEventTitle.text    = event.title
+        card.tvEventDateTime.text = "${event.date ?: ""} • ${event.time ?: ""}"
+        card.tvEventLocation.text = event.location ?: "—"
+        card.tvEventPrice.text    = if ((event.price ?: 0.0) == 0.0) "FREE" else "₱${event.price?.toInt()}"
+        card.tvEventFormat.text   = event.format ?: "In-Person"
+        if (!event.imageUrl.isNullOrBlank()) {
+            Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
+        }
+        card.root.setOnClickListener {
+
+        }
+    }
+
+    private fun emptyText() = TextView(requireContext()).apply {
+        text = "No events found. Try a different search."
+        setTextColor(resources.getColor(R.color.text_muted, null))
+        textSize = 14f
+        gravity = Gravity.CENTER
+        setPadding(0, 48, 0, 48)
     }
 
     override fun onDestroyView() {
