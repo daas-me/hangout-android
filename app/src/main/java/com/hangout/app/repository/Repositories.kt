@@ -101,7 +101,7 @@ class UserRepository(context: Context) {
         return try {
             val response = api.updateProfile(UpdateProfileRequest(firstname, lastname))
             if (response.isSuccessful) {
-                clearCache() // bust full cache so next loadAll re-fetches
+                clearCache()
                 Result.Success(response.body() ?: MessageResponse("Profile updated"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to update profile")
@@ -167,7 +167,7 @@ class UserRepository(context: Context) {
             val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
             val response = api.uploadPhoto(part)
             if (response.isSuccessful) {
-                cachedPhoto = null // bust only photo cache
+                cachedPhoto = null
                 Result.Success(response.body() ?: MessageResponse("Photo uploaded"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Upload failed")
@@ -181,7 +181,7 @@ class UserRepository(context: Context) {
         return try {
             val response = api.deletePhoto()
             if (response.isSuccessful) {
-                cachedPhoto = null // bust only photo cache
+                cachedPhoto = null
                 Result.Success(response.body() ?: MessageResponse("Photo removed"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to remove photo")

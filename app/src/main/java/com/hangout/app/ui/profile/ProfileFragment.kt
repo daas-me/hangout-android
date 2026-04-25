@@ -16,8 +16,7 @@ import com.hangout.app.R
 import com.hangout.app.databinding.DialogChangePasswordBinding
 import com.hangout.app.databinding.DialogEditProfileBinding
 import com.hangout.app.databinding.FragmentProfileBinding
-import com.hangout.app.models.UserProfile
-import com.hangout.app.models.UserStats
+import com.hangout.app.models.*
 import com.hangout.app.ui.auth.AuthActivity
 import com.hangout.app.utils.getValue
 import com.hangout.app.utils.hide

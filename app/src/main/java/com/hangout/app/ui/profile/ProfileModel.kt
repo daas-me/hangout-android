@@ -1,9 +1,7 @@
 package com.hangout.app.ui.profile
 
 import android.content.Context
-import com.hangout.app.models.MessageResponse
-import com.hangout.app.models.UserProfile
-import com.hangout.app.models.UserStats
+import com.hangout.app.models.*
 import com.hangout.app.repository.Result
 import com.hangout.app.repository.UserRepository
 import com.hangout.app.utils.SessionManager

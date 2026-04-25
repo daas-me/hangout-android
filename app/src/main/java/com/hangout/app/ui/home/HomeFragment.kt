@@ -10,9 +10,8 @@ import com.bumptech.glide.Glide
 import com.hangout.app.R
 import com.hangout.app.databinding.FragmentHomeBinding
 import com.hangout.app.databinding.ItemEventCardHorizontalBinding
-import com.hangout.app.models.EventItem
-import com.hangout.app.models.UserProfile
-import com.hangout.app.models.UserStats
+import com.hangout.app.models.*
+import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.utils.toast
 
 class HomeFragment : Fragment(), HomeContract.View {
@@ -50,8 +49,7 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     // ── HomeContract.View ──────────────────────────────────────────────────
 
-    override fun showLoading(show: Boolean) {
-    }
+    override fun showLoading(show: Boolean) {}
 
     override fun showError(message: String) {
         toast(message)
@@ -113,7 +111,19 @@ class HomeFragment : Fragment(), HomeContract.View {
             Glide.with(this).load(event.imageUrl).centerCrop().into(cardBinding.ivEventImage)
         }
         cardBinding.root.setOnClickListener {
+            openEventDetail(event)
         }
+    }
+
+    private fun openEventDetail(event: EventItem) {
+        val fragment = EventDetailFragment.newInstance(
+            event = event,
+            onBack = { presenter.loadAll() }  // reload home data when returning
+        )
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun emptyText(msg: String) = TextView(requireContext()).apply {

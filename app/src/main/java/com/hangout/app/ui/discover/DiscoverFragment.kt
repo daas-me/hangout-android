@@ -14,6 +14,7 @@ import com.hangout.app.R
 import com.hangout.app.databinding.FragmentDiscoverBinding
 import com.hangout.app.databinding.ItemEventCardBinding
 import com.hangout.app.models.EventItem
+import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.utils.toast
 
 class DiscoverFragment : Fragment(), DiscoverContract.View {
@@ -53,8 +54,7 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
 
     // ── DiscoverContract.View ──────────────────────────────────────────────
 
-    override fun showLoading(show: Boolean) {
-    }
+    override fun showLoading(show: Boolean) {}
 
     override fun showError(message: String) {
         toast(message)
@@ -88,8 +88,19 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
             Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
         }
         card.root.setOnClickListener {
-
+            openEventDetail(event)
         }
+    }
+
+    private fun openEventDetail(event: EventItem) {
+        val fragment = EventDetailFragment.newInstance(
+            event = event,
+            onBack = { presenter.loadEvents(search = binding.etSearch.text.toString()) }
+        )
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun emptyText() = TextView(requireContext()).apply {
