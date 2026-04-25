@@ -10,7 +10,6 @@ import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.hangout.app.R
@@ -19,7 +18,12 @@ import com.hangout.app.databinding.DialogEditProfileBinding
 import com.hangout.app.databinding.FragmentProfileBinding
 import com.hangout.app.models.UserProfile
 import com.hangout.app.models.UserStats
-import com.hangout.app.utils.SessionManager
+import com.hangout.app.ui.auth.AuthActivity
+import com.hangout.app.utils.getValue
+import com.hangout.app.utils.hide
+import com.hangout.app.utils.show
+import com.hangout.app.utils.showIf
+import com.hangout.app.utils.toast
 import java.io.File
 import java.io.FileOutputStream
 
@@ -28,7 +32,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private lateinit var presenter: ProfileContract.Presenter
-    private lateinit var session: SessionManager
 
     private var editProfileDialog: BottomSheetDialog? = null
     private var changePasswordDialog: BottomSheetDialog? = null
@@ -43,7 +46,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         super.onCreate(savedInstanceState)
         retainInstance = true
         if (!::presenter.isInitialized) {
-            presenter = ProfilePresenter(this, requireContext())
+            presenter = ProfilePresenter(this, ProfileModel(requireContext()))
         }
     }
 
@@ -51,7 +54,6 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        session  = SessionManager(requireContext())
         return binding.root
     }
 
@@ -62,23 +64,31 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         binding.btnEditProfile.setOnClickListener  { showEditProfileDialog() }
         binding.ivCameraOverlay.setOnClickListener { showEditProfileDialog() }
 
-        setupSettingsRow(binding.rowPersonalInfo.root,
+        setupSettingsRow(
+            binding.rowPersonalInfo.root,
             "Personal Information", "Update your details", R.drawable.ic_user
         ) { showEditProfileDialog() }
 
-        setupSettingsRow(binding.rowChangePassword.root,
+        setupSettingsRow(
+            binding.rowChangePassword.root,
             "Privacy & Security", "Change password & privacy", R.drawable.ic_lock
         ) { showChangePasswordDialog() }
 
-        setupSettingsRow(binding.rowSignOut.root,
+        setupSettingsRow(
+            binding.rowSignOut.root,
             "Sign Out", "Log out of your account", R.drawable.ic_logout
-        ) {
-            session.clearSession()
-            requireActivity().finish()
-        }
+        ) { signOut() }
     }
 
     // ── ProfileContract.View ───────────────────────────────────────────────
+
+    override fun showLoading(show: Boolean) {
+        binding.progressBar.showIf(show)
+    }
+
+    override fun showMessage(message: String) {
+        toast(message)
+    }
 
     override fun showProfile(profile: UserProfile) {
         val fullName = "${profile.firstname} ${profile.lastname}".trim()
@@ -100,22 +110,14 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         val bytes = Base64.decode(photoData.substringAfter("base64,"), Base64.DEFAULT)
         val bmp   = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
         binding.ivAvatar.setImageBitmap(bmp)
-        binding.ivAvatar.visibility   = View.VISIBLE
-        binding.tvInitials.visibility = View.GONE
+        binding.ivAvatar.show()
+        binding.tvInitials.hide()
     }
 
     override fun clearPhoto() {
         currentPhotoData = null
-        binding.ivAvatar.visibility   = View.GONE
-        binding.tvInitials.visibility = View.VISIBLE
-    }
-
-    override fun showLoading(show: Boolean) {
-        binding.progressBar.visibility = if (show) View.VISIBLE else View.GONE
-    }
-
-    override fun showMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        binding.ivAvatar.hide()
+        binding.tvInitials.show()
     }
 
     override fun onProfileUpdateSuccess() {
@@ -124,6 +126,15 @@ class ProfileFragment : Fragment(), ProfileContract.View {
 
     override fun onPasswordUpdateSuccess() {
         changePasswordDialog?.dismiss()
+    }
+
+    // ── Sign Out ───────────────────────────────────────────────────────────
+
+    private fun signOut() {
+        presenter.clearSession()
+        val intent = Intent(requireContext(), AuthActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     // ── Dialogs ────────────────────────────────────────────────────────────
@@ -135,10 +146,10 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         currentPhotoData?.let { photoData ->
             val bytes = Base64.decode(photoData.substringAfter("base64,"), Base64.DEFAULT)
             db.ivPhotoPreview.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.size))
-            db.tvPhotoInitials.visibility = View.GONE
-            db.btnRemovePhoto.visibility  = View.VISIBLE
+            db.tvPhotoInitials.hide()
+            db.btnRemovePhoto.show()
         } ?: run {
-            db.btnRemovePhoto.visibility = View.GONE
+            db.btnRemovePhoto.hide()
         }
 
         db.btnChangePhoto.setOnClickListener {
@@ -150,13 +161,13 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         db.btnRemovePhoto.setOnClickListener {
             presenter.deletePhoto()
             db.ivPhotoPreview.setImageDrawable(null)
-            db.tvPhotoInitials.visibility = View.VISIBLE
-            db.btnRemovePhoto.visibility  = View.GONE
+            db.tvPhotoInitials.show()
+            db.btnRemovePhoto.hide()
         }
 
         db.btnSave.setOnClickListener {
-            val firstname = db.etFirstName.text?.toString()?.trim() ?: ""
-            val lastname  = db.etLastName.text?.toString()?.trim() ?: ""
+            val firstname = db.etFirstName.getValue()
+            val lastname  = db.etLastName.getValue()
             if (firstname.isBlank()) {
                 db.tilFirstName.error = "First name is required"
                 return@setOnClickListener
@@ -173,7 +184,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
             show()
             val bottomSheet = findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.background = null
-            bottomSheet?.elevation = 0f
+            bottomSheet?.elevation  = 0f
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             window?.decorView?.setBackgroundResource(android.R.color.transparent)
         }
@@ -183,9 +194,9 @@ class ProfileFragment : Fragment(), ProfileContract.View {
         val db = DialogChangePasswordBinding.inflate(layoutInflater)
 
         db.btnUpdate.setOnClickListener {
-            val old     = db.etCurrentPassword.text?.toString() ?: ""
-            val newPw   = db.etNewPassword.text?.toString() ?: ""
-            val confirm = db.etConfirmPassword.text?.toString() ?: ""
+            val old     = db.etCurrentPassword.getValue()
+            val newPw   = db.etNewPassword.getValue()
+            val confirm = db.etConfirmPassword.getValue()
             var valid   = true
 
             if (old.isBlank())    { db.tilCurrentPassword.error = "Required"; valid = false }
@@ -206,7 +217,7 @@ class ProfileFragment : Fragment(), ProfileContract.View {
             show()
             val bottomSheet = findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.background = null
-            bottomSheet?.elevation = 0f
+            bottomSheet?.elevation  = 0f
             window?.setBackgroundDrawableResource(android.R.color.transparent)
             window?.decorView?.setBackgroundResource(android.R.color.transparent)
         }
@@ -238,8 +249,8 @@ class ProfileFragment : Fragment(), ProfileContract.View {
             presenter.uploadPhoto(file)
             editProfileBinding?.let { db ->
                 db.ivPhotoPreview.setImageURI(uri)
-                db.tvPhotoInitials.visibility = View.GONE
-                db.btnRemovePhoto.visibility  = View.VISIBLE
+                db.tvPhotoInitials.hide()
+                db.btnRemovePhoto.show()
             }
         }
     }

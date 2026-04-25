@@ -1,4 +1,4 @@
-package com.hangout.app.ui.main
+package com.hangout.app.ui.nav
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,7 +9,7 @@ import com.hangout.app.ui.discover.DiscoverFragment
 import com.hangout.app.ui.home.HomeFragment
 import com.hangout.app.ui.profile.ProfileFragment
 
-class MainActivity : AppCompatActivity() {
+class NavActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Disable the center placeholder item
         binding.bottomNavigation.menu.getItem(2).isEnabled = false
         binding.bottomNavigation.background = null
 
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> { replaceFragment(HomeFragment()); true }
+                R.id.nav_home     -> { replaceFragment(HomeFragment()); true }
                 R.id.nav_discover -> { replaceFragment(DiscoverFragment()); true }
                 R.id.nav_hangouts -> { true /* TODO: MyHangOutsFragment */ }
                 R.id.nav_profile  -> { replaceFragment(ProfileFragment()); true }

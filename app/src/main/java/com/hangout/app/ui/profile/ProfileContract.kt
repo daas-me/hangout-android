@@ -21,6 +21,7 @@ interface ProfileContract {
         fun updatePassword(oldPassword: String, newPassword: String)
         fun uploadPhoto(file: File)
         fun deletePhoto()
+        fun clearSession()
         fun detachView()
     }
 }
