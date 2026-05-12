@@ -75,8 +75,8 @@
                         android:src="@drawable/ic_heart_outline"
                         android:contentDescription="Like"
                         android:padding="10dp"
-                        android:tint="#F0EEFF"
-                        android:layout_marginEnd="10dp" />
+                        android:layout_marginEnd="10dp"
+                        app:tint="#F0EEFF" />
 
                     <!-- Share button -->
                     <ImageButton
@@ -87,7 +87,7 @@
                         android:src="@drawable/ic_share"
                         android:contentDescription="Share"
                         android:padding="10dp"
-                        android:tint="#F0EEFF" />
+                        app:tint="#F0EEFF" />
                 </LinearLayout>
 
                 <!-- Bottom: format badge + title -->
@@ -155,9 +155,9 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_calendar"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Date"
-                            android:layout_marginEnd="12dp" />
+                            android:layout_marginEnd="12dp"
+                            app:tint="#9D5FF5" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -197,9 +197,9 @@
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:src="@drawable/ic_clock"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Time"
-                            android:layout_marginEnd="12dp" />
+                            android:layout_marginEnd="12dp"
+                            app:tint="#9D5FF5" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -241,9 +241,9 @@
                         android:layout_height="18dp"
                         android:layout_marginTop="2dp"
                         android:src="@drawable/ic_location"
-                        android:tint="#9D5FF5"
                         android:contentDescription="Location"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        app:tint="#9D5FF5" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -308,9 +308,9 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_ticket"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Price"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            app:tint="#9D5FF5" />
 
                         <TextView
                             android:id="@+id/tvStatPrice"
@@ -348,9 +348,9 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_users"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Attending"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            app:tint="#9D5FF5" />
 
                         <TextView
                             android:id="@+id/tvStatAttending"
@@ -388,9 +388,9 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_tag"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Format"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            app:tint="#9D5FF5" />
 
                         <TextView
                             android:id="@+id/tvStatFormat"
@@ -427,9 +427,9 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@drawable/ic_users"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Capacity"
-                            android:layout_marginBottom="4dp" />
+                            android:layout_marginBottom="4dp"
+                            app:tint="#9D5FF5" />
 
                         <TextView
                             android:id="@+id/tvStatCapacity"
@@ -547,9 +547,9 @@
                         android:layout_width="18dp"
                         android:layout_height="18dp"
                         android:src="@drawable/ic_seat"
-                        android:tint="#9D5FF5"
                         android:contentDescription="Seating"
-                        android:layout_marginEnd="12dp" />
+                        android:layout_marginEnd="12dp"
+                        app:tint="#9D5FF5" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -705,9 +705,9 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_credit_card"
-                            android:tint="#9D5FF5"
                             android:contentDescription="Payment"
-                            android:layout_marginEnd="10dp" />
+                            android:layout_marginEnd="10dp"
+                            app:tint="#9D5FF5" />
 
                         <TextView
                             android:layout_width="wrap_content"

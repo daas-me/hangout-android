@@ -1,6 +1,6 @@
 package com.hangout.app.ui.eventdetail
 
-import com.hangout.app.models.EventItem
+import com.hangout.app.data.EventItem
 import com.hangout.app.repository.Result
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +17,25 @@ class EventDetailPresenter(
 
     override fun loadEvent(event: EventItem) {
         view?.showEvent(event)
+        // Auto-check RSVP status when event loads
+        event.id?.let { checkRsvpStatus(it) }
+    }
+
+    override fun checkRsvpStatus(eventId: Long) {
+        scope.launch {
+            when (val r = model.checkRsvpStatus(eventId)) {
+                is Result.Success -> {
+                    val isRsvped = r.data.rsvped &&
+                            r.data.status != "cancelled" &&
+                            r.data.status != "rejected"
+                    view?.onRsvpStatusLoaded(isRsvped, r.data.paymentStatus)
+                }
+                is Result.Error -> {
+                    // Silently fail — treat as not RSVP'd
+                    view?.onRsvpStatusLoaded(false, null)
+                }
+            }
+        }
     }
 
     override fun rsvp(eventId: Long) {
@@ -24,12 +43,15 @@ class EventDetailPresenter(
         scope.launch {
             when (val r = model.rsvp(eventId)) {
                 is Result.Success -> {
-                    view?.showMessage(r.data.message)
+                    view?.showLoading(false)
+                    view?.showMessage("RSVP confirmed!")
                     view?.onRsvpSuccess()
                 }
-                is Result.Error -> view?.showMessage(r.message)
+                is Result.Error -> {
+                    view?.showLoading(false)
+                    view?.showMessage(r.message)
+                }
             }
-            view?.showLoading(false)
         }
     }
 
@@ -38,12 +60,15 @@ class EventDetailPresenter(
         scope.launch {
             when (val r = model.removeRsvp(eventId)) {
                 is Result.Success -> {
-                    view?.showMessage(r.data.message)
+                    view?.showLoading(false)
+                    view?.showMessage("RSVP cancelled.")
                     view?.onRsvpRemoved()
                 }
-                is Result.Error -> view?.showMessage(r.message)
+                is Result.Error -> {
+                    view?.showLoading(false)
+                    view?.showMessage(r.message)
+                }
             }
-            view?.showLoading(false)
         }
     }
 

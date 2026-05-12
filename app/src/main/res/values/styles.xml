@@ -48,4 +48,17 @@
         <item name="elevation">0dp</item>
     </style>
 
+    <style name="DarkEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="DarkInputTheme">
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="hintTextColor">@color/text_muted</item>
+    </style>
+
 </resources>

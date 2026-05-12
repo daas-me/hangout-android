@@ -1,6 +1,6 @@
 package com.hangout.app.ui.discover
 
-import com.hangout.app.models.EventItem
+import com.hangout.app.data.EventItem
 
 interface DiscoverContract {
     interface View {

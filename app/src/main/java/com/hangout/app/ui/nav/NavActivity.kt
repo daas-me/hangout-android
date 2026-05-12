@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hangout.app.R
 import com.hangout.app.databinding.ActivityMainBinding
+import com.hangout.app.ui.createevent.CreateEventActivity
 import com.hangout.app.ui.discover.DiscoverFragment
 import com.hangout.app.ui.home.HomeFragment
+import com.hangout.app.ui.myhangouts.MyHangoutsFragment
 import com.hangout.app.ui.profile.ProfileFragment
 
 class NavActivity : AppCompatActivity() {
@@ -30,14 +32,14 @@ class NavActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_home     -> { replaceFragment(HomeFragment()); true }
                 R.id.nav_discover -> { replaceFragment(DiscoverFragment()); true }
-                R.id.nav_hangouts -> { true /* TODO: MyHangOutsFragment */ }
+                R.id.nav_hangouts -> { replaceFragment(MyHangoutsFragment());true }
                 R.id.nav_profile  -> { replaceFragment(ProfileFragment()); true }
                 else -> false
             }
         }
 
         binding.fabCreate.setOnClickListener {
-            // TODO: navigate to Create HangOut
+            startActivity(android.content.Intent(this, CreateEventActivity::class.java))
         }
     }
 

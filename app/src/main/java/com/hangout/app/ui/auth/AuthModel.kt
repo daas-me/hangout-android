@@ -1,8 +1,8 @@
 package com.hangout.app.ui.auth
 
 import android.content.Context
-import com.hangout.app.models.LoginResponse
-import com.hangout.app.models.MessageResponse
+import com.hangout.app.data.LoginResponse
+import com.hangout.app.data.MessageResponse
 import com.hangout.app.repository.AuthRepository
 import com.hangout.app.repository.Result
 import com.hangout.app.utils.SessionManager

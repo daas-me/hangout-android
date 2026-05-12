@@ -11,9 +11,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hangout.app.R
+import com.hangout.app.data.EventItem
+import com.hangout.app.utils.EventHolder
 import com.hangout.app.databinding.FragmentDiscoverBinding
 import com.hangout.app.databinding.ItemEventCardBinding
-import com.hangout.app.models.EventItem
 import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.utils.toast
 
@@ -93,9 +94,14 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
     }
 
     private fun openEventDetail(event: EventItem) {
+        val currentSearch = binding.etSearch.text.toString()
+        EventHolder.currentEvent = event
         val fragment = EventDetailFragment.newInstance(
-            event = event,
-            onBack = { presenter.loadEvents(search = binding.etSearch.text.toString()) }
+            onBack = {
+                if (_binding != null) {
+                    presenter.loadEvents(search = currentSearch)
+                }
+            }
         )
         parentFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment, fragment)
