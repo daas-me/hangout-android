@@ -1,7 +1,6 @@
-package com.hangout.app.models
+package com.hangout.app.data
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -71,27 +70,3 @@ data class Session(
     val firstname: String
 )
 
-// ── Events ────────────────────────────────────────────────────────────────────
-
-@Parcelize
-data class EventItem(
-    val id: Long? = null,
-    val title: String = "",
-    val description: String? = null,
-    val date: String? = null,
-    val time: String? = null,
-    val location: String? = null,
-    val format: String? = null,        // "In-Person" | "Virtual" | "Hybrid"
-    val price: Double? = null,
-    val capacity: Int? = null,
-    val attendeeCount: Int? = null,
-    val seatingType: String? = null,   // "reserved" | "open"
-    val imageUrl: String? = null,
-    val paymentMethod: String? = null, // "gcash" | "paymaya" | "bank"
-    val accountNumber: String? = null,
-    val hostFirstName: String? = null,
-    val hostLastName: String? = null,
-    val hostEmail: String? = null,
-    val eventType: String? = null,
-    val isDraft: Boolean? = null
-) : Parcelable

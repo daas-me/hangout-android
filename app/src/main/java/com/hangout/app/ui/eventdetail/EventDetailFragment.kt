@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.hangout.app.R
+import com.hangout.app.data.EventItem
 import com.hangout.app.databinding.FragmentEventDetailBinding
-import com.hangout.app.models.EventItem
+import com.hangout.app.ui.paymentproof.PaymentProofBottomSheet
+import com.hangout.app.utils.EventHolder
 import com.hangout.app.utils.hide
 import com.hangout.app.utils.show
 import com.hangout.app.utils.toast
@@ -21,6 +23,8 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     private val binding get() = _binding!!
     private lateinit var presenter: EventDetailContract.Presenter
 
+
+
     private var isLiked  = false
     private var isRsvped = false
 
@@ -28,11 +32,8 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     var onBackCallback: (() -> Unit)? = null
 
     companion object {
-        private const val ARG_EVENT = "arg_event"
-
-        fun newInstance(event: EventItem, onBack: (() -> Unit)? = null) =
+        fun newInstance(onBack: (() -> Unit)? = null) =  // remove event param
             EventDetailFragment().apply {
-                arguments = Bundle().apply { putParcelable(ARG_EVENT, event) }
                 onBackCallback = onBack
             }
     }
@@ -56,8 +57,7 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        @Suppress("DEPRECATION")
-        val event = arguments?.getParcelable<EventItem>(ARG_EVENT) ?: return
+        val event = EventHolder.currentEvent ?: return
         presenter.loadEvent(event)
     }
 
@@ -83,14 +83,45 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
 
     override fun onRsvpSuccess() {
         isRsvped = true
-        binding.btnRsvp.text = "✓  RSVP'd!"
-        binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_success_bg)
+        val isPaid = (EventHolder.currentEvent?.price ?: 0.0) > 0.0
+        if (isPaid) {
+            // Immediately open payment proof sheet
+            openPaymentProofSheet()
+        } else {
+            binding.btnRsvp.text = "✓  RSVP'd!"
+            binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_success_bg)
+        }
     }
 
     override fun onRsvpRemoved() {
         isRsvped = false
         binding.btnRsvp.text = "RSVP Now"
         binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_bg)
+    }
+
+    override fun onRsvpStatusLoaded(isRsvped: Boolean, paymentStatus: String?) {
+        this.isRsvped = isRsvped
+        when {
+            paymentStatus == null && isRsvped && (EventHolder.currentEvent?.price ?: 0.0) > 0.0 -> {
+                binding.btnRsvp.text = "Upload Payment Proof"
+                binding.btnRsvp.isEnabled = true
+                binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_bg)
+                binding.btnRsvp.setOnClickListener { openPaymentProofSheet() }
+            }
+            paymentStatus == "pending" -> {
+                binding.btnRsvp.text = "Awaiting Approval"
+                binding.btnRsvp.isEnabled = false
+                binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_pending_bg)
+            }
+            isRsvped -> {
+                binding.btnRsvp.text = "✓  RSVP'd!"
+                binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_success_bg)
+            }
+            else -> {
+                binding.btnRsvp.text = "RSVP Now"
+                binding.btnRsvp.setBackgroundResource(R.drawable.btn_rsvp_bg)
+            }
+        }
     }
 
     // ── Bind helpers ───────────────────────────────────────────────────────
@@ -114,6 +145,18 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
         } else {
             binding.cardLocation.hide()
         }
+    }
+
+    // Add this helper anywhere in EventDetailFragment:
+    private fun openPaymentProofSheet() {
+        val e = EventHolder.currentEvent ?: return
+        PaymentProofBottomSheet.newInstance(
+            event     = e,
+            onSuccess = {
+                // Refresh RSVP status after proof submitted
+                e.id?.let { presenter.checkRsvpStatus(it) }
+            }
+        ).show(parentFragmentManager, "payment_proof")
     }
 
     private fun bindStats(event: EventItem) {

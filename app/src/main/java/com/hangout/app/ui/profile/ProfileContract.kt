@@ -1,6 +1,6 @@
 package com.hangout.app.ui.profile
 
-import com.hangout.app.models.*
+import com.hangout.app.data.*
 import java.io.File
 
 interface ProfileContract {

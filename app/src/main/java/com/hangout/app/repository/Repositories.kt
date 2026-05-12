@@ -1,8 +1,9 @@
 package com.hangout.app.repository
 
 import android.content.Context
-import com.hangout.app.models.*
+import com.hangout.app.data.*
 import com.hangout.app.network.RetrofitClient
+import com.hangout.app.utils.AppCache
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -53,42 +54,28 @@ class AuthRepository(context: Context) {
 }
 
 // ── User Repository ───────────────────────────────────────────────────────────
-
-class UserRepository(context: Context) {
-    private val api = RetrofitClient.getApiService(context)
-
-    // ── Cache ──────────────────────────────────────────────────────────────
-    private var cachedProfile: UserProfile? = null
-    private var cachedStats: UserStats? = null
-    private var cachedPhoto: String? = null
-    private var lastFetchTime: Long = 0L
-
-    companion object {
-        private const val CACHE_TTL_MS = 5 * 60 * 1000L // 5 minutes
-    }
-
-    private fun isCacheValid() =
-        System.currentTimeMillis() - lastFetchTime < CACHE_TTL_MS
+class UserRepository(private val context: Context) {
+    private val api  = RetrofitClient.getApiService(context)
+    private val gson = com.google.gson.Gson()
 
     fun clearCache() {
-        cachedProfile = null
-        cachedStats   = null
-        cachedPhoto   = null
-        lastFetchTime = 0L
+        AppCache.bust(context, AppCache.Keys.PROFILE)
+        AppCache.bust(context, AppCache.Keys.STATS)
+        AppCache.bust(context, AppCache.Keys.PHOTO)
     }
 
-    // ── Profile ────────────────────────────────────────────────────────────
-
     suspend fun getProfile(forceRefresh: Boolean = false): Result<UserProfile> {
-        if (!forceRefresh && isCacheValid() && cachedProfile != null) {
-            return Result.Success(cachedProfile!!)
+        if (!forceRefresh) {
+            AppCache.get(context, AppCache.Keys.PROFILE)?.let { json ->
+                return Result.Success(gson.fromJson(json, UserProfile::class.java))
+            }
         }
         return try {
             val response = api.getProfile()
             if (response.isSuccessful && response.body() != null) {
-                cachedProfile = response.body()!!
-                lastFetchTime = System.currentTimeMillis()
-                Result.Success(cachedProfile!!)
+                val body = response.body()!!
+                AppCache.put(context, AppCache.Keys.PROFILE, gson.toJson(body), AppCache.TTL.PROFILE)
+                Result.Success(body)
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to load profile")
             }
@@ -101,7 +88,8 @@ class UserRepository(context: Context) {
         return try {
             val response = api.updateProfile(UpdateProfileRequest(firstname, lastname))
             if (response.isSuccessful) {
-                clearCache()
+                AppCache.bust(context, AppCache.Keys.PROFILE)
+                AppCache.bust(context, AppCache.Keys.STATS)
                 Result.Success(response.body() ?: MessageResponse("Profile updated"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to update profile")
@@ -123,17 +111,18 @@ class UserRepository(context: Context) {
         }
     }
 
-    // ── Stats ──────────────────────────────────────────────────────────────
-
     suspend fun getStats(forceRefresh: Boolean = false): Result<UserStats> {
-        if (!forceRefresh && isCacheValid() && cachedStats != null) {
-            return Result.Success(cachedStats!!)
+        if (!forceRefresh) {
+            AppCache.get(context, AppCache.Keys.STATS)?.let { json ->
+                return Result.Success(gson.fromJson(json, UserStats::class.java))
+            }
         }
         return try {
             val response = api.getStats()
             if (response.isSuccessful && response.body() != null) {
-                cachedStats = response.body()!!
-                Result.Success(cachedStats!!)
+                val body = response.body()!!
+                AppCache.put(context, AppCache.Keys.STATS, gson.toJson(body), AppCache.TTL.PROFILE)
+                Result.Success(body)
             } else {
                 Result.Error("Failed to load stats")
             }
@@ -142,17 +131,18 @@ class UserRepository(context: Context) {
         }
     }
 
-    // ── Photo ──────────────────────────────────────────────────────────────
-
     suspend fun getPhoto(forceRefresh: Boolean = false): Result<String> {
-        if (!forceRefresh && isCacheValid() && cachedPhoto != null) {
-            return Result.Success(cachedPhoto!!)
+        if (!forceRefresh) {
+            AppCache.get(context, AppCache.Keys.PHOTO)?.let { json ->
+                return Result.Success(json)
+            }
         }
         return try {
             val response = api.getPhoto()
             if (response.isSuccessful && response.body() != null) {
-                cachedPhoto = response.body()!!.photo
-                Result.Success(cachedPhoto!!)
+                val photo = response.body()!!.photo ?: return Result.Error("No photo")
+                AppCache.put(context, AppCache.Keys.PHOTO, photo, AppCache.TTL.PROFILE)
+                Result.Success(photo)
             } else {
                 Result.Error("No photo")
             }
@@ -167,7 +157,7 @@ class UserRepository(context: Context) {
             val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
             val response = api.uploadPhoto(part)
             if (response.isSuccessful) {
-                cachedPhoto = null
+                AppCache.bust(context, AppCache.Keys.PHOTO)
                 Result.Success(response.body() ?: MessageResponse("Photo uploaded"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Upload failed")
@@ -181,7 +171,7 @@ class UserRepository(context: Context) {
         return try {
             val response = api.deletePhoto()
             if (response.isSuccessful) {
-                cachedPhoto = null
+                AppCache.bust(context, AppCache.Keys.PHOTO)
                 Result.Success(response.body() ?: MessageResponse("Photo removed"))
             } else {
                 Result.Error(parseError(response.errorBody()?.string()) ?: "Failed to remove photo")
