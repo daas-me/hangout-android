@@ -26,6 +26,17 @@ class AttendingDashboardPresenter(
         }
     }
 
+    override fun refreshEvent(eventId: Long) {
+        scope.launch {
+            view?.showLoading(true)
+            when (val r = model.fetchEvent(eventId)) {
+                is Result.Success -> view?.showEvent(r.data)
+                is Result.Error   -> view?.showMessage(r.message)
+            }
+            view?.showLoading(false)
+        }
+    }
+
     override fun requestRefund(eventId: Long, reason: String) {
         scope.launch {
             view?.showLoading(true)
@@ -37,10 +48,10 @@ class AttendingDashboardPresenter(
         }
     }
 
-    override fun acknowledgeRefund(eventId: Long) {
+    override fun acknowledgeRefund(eventId: Long, choice: String, reason: String?) {
         scope.launch {
             view?.showLoading(true)
-            when (val r = model.acknowledgeRefund(eventId)) {
+            when (val r = model.acknowledgeRefund(eventId, choice, reason)) {
                 is Result.Success -> view?.onRefundAcknowledged()
                 is Result.Error   -> view?.showMessage(r.message)
             }

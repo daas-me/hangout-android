@@ -7,38 +7,7 @@
     android:orientation="vertical"
     android:background="@color/bg_dark">
 
-    <!-- Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="48dp"
-        android:paddingBottom="12dp"
-        android:paddingHorizontal="20dp"
-        android:background="@color/bg_dark">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="@drawable/btn_icon_bg"
-            android:src="@drawable/ic_back"
-            app:tint="@color/text_primary"
-            android:contentDescription="Back"
-            android:layout_marginEnd="12dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="My RSVP"
-            android:textColor="@color/text_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- Loading bar -->
+    <!-- Loading bar (stays pinned at very top, outside scroll) -->
     <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
@@ -48,323 +17,640 @@
         android:visibility="gone"
         android:indeterminateTint="@color/purple_main" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="40dp">
+            android:orientation="vertical">
 
-            <!-- Status stripe + label -->
-            <LinearLayout
+            <!-- ══════════════════════════════════════════
+                 HERO SECTION
+                 ══════════════════════════════════════════ -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/card_bg"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="12dp">
+                android:layout_height="270dp">
 
+                <!-- Purple gradient background -->
                 <View
-                    android:id="@+id/viewStatusStripe"
-                    android:layout_width="4dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:minHeight="56dp"
-                    android:background="@color/purple_main" />
+                    android:background="@drawable/hero_gradient" />
 
-                <TextView
-                    android:id="@+id/tvStatusLabel"
+                <!-- Bottom-fade scrim: transparent → bg_dark -->
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/success_green" />
-            </LinearLayout>
+                    android:layout_height="match_parent"
+                    android:background="@drawable/hero_scrim" />
 
-            <!-- Event info card -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:id="@+id/tvEventTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary"
-                    android:textSize="17sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp" />
-
-                <TextView
-                    android:id="@+id/tvEventDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_muted"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/tvEventLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_muted"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="8dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tvEventFormat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/purple_light"
-                        android:textSize="12sp"
-                        android:background="#22A855F7"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:id="@+id/tvEventPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/success_green"
-                        android:textSize="12sp"
-                        android:background="#224ADE80"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Ticket info (confirmed only) -->
-            <LinearLayout
-                android:id="@+id/layoutTicketInfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎟  YOUR TICKET"
-                    android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:layout_marginBottom="12dp" />
-
+                <!-- ── Top action bar ── -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:gravity="center_vertical"
+                    android:paddingTop="48dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="8dp">
 
-                    <TextView
+                    <ImageButton
+                        android:id="@+id/btnBack"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_icon_bg_glass"
+                        android:src="@drawable/ic_back"
+                        app:tint="@color/text_primary"
+                        android:contentDescription="Back" />
+
+                    <Space
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Ticket No."
-                        android:textColor="@color/text_muted"
-                        android:textSize="12sp" />
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
 
-                    <TextView
-                        android:id="@+id/tvTicketNumber"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/text_primary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                    <!-- Share button — wired up separately in Fragment if needed -->
+                    <ImageButton
+                        android:id="@+id/btnShareEvent"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_icon_bg_glass"
+                        android:src="@drawable/ic_share"
+                        android:contentDescription="Share"
+                        android:visibility="gone" />
                 </LinearLayout>
 
+                <!-- ── Hero bottom content ── -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingBottom="22dp">
 
+                    <!-- Status badge pill -->
                     <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Seat"
-                        android:textColor="@color/text_muted"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/tvSeatNumber"
+                        android:id="@+id/tvStatusLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/purple_light"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:text="Registered"
+                        android:textColor="@color/purple_main"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/status_pill_bg"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <!-- Event title -->
+                    <TextView
+                        android:id="@+id/tvEventTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_primary"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:layout_marginBottom="10dp" />
+
+                    <!-- Date & time meta row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:src="@drawable/ic_calendar"
+                            android:alpha="0.7"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvEventDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="#CCffffff"
+                            android:textSize="12sp"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+                    </LinearLayout>
+
+                    <!-- Location meta row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageView
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:src="@drawable/ic_location"
+                            android:alpha="0.7"
+                            android:layout_marginEnd="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvEventLocation"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="#CCffffff"
+                            android:textSize="12sp"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+                    </LinearLayout>
+
+                    <!-- Format + Price chips -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvEventFormat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/purple_light"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="#22A855F7"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvEventPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/success_green"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:background="#224ADE80"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="5dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Kept invisible for Fragment binding compat -->
+                <View
+                    android:id="@+id/viewStatusStripe"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+            <!-- ══════════════════════════════════════════
+                 BODY CONTENT
+                 ══════════════════════════════════════════ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="48dp">
+
+                <!-- ── QUICK ACTIONS + YOUR TICKET (layoutTicketInfo) ────────── -->
+                <!--
+                    Fragment calls:   binding.layoutTicketInfo.showIf(isConfirmed)
+                                      binding.btnViewTicket.setOnClickListener { ... }
+                    Both IDs are here. btnViewTicket is the "Download" card (LinearLayout);
+                    setOnClickListener works on any View so no Fragment change needed.
+                -->
+                <LinearLayout
+                    android:id="@+id/layoutTicketInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone">
+
+                    <!-- Section title -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Quick Actions"
+                        android:textColor="@color/text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="12dp" />
+
+                    <!-- Two quick-action cards -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="20dp">
+
+                        <!-- Download E-Ticket card  (id = btnViewTicket) -->
+                        <LinearLayout
+                            android:id="@+id/btnViewTicket"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@drawable/quick_action_card_bg"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_marginEnd="10dp">
+
+                            <LinearLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/icon_box_purple"
+                                android:gravity="center"
+                                android:layout_marginBottom="10dp">
+
+                                <ImageView
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:src="@drawable/ic_qr_code"
+                                    app:tint="@color/purple_light" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Download E-Ticket"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="3dp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Save your ticket to device"
+                                android:textColor="@color/text_muted"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <!-- Share HangOut card -->
+                        <LinearLayout
+                            android:id="@+id/btnShareAction"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:background="@drawable/quick_action_card_bg"
+                            android:padding="16dp"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <LinearLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/icon_box_green"
+                                android:gravity="center"
+                                android:layout_marginBottom="10dp">
+
+                                <ImageView
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
+                                    android:src="@drawable/ic_share"
+                                    app:tint="@color/success_green" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Share HangOut"
+                                android:textColor="@color/text_primary"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="3dp" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Invite friends to attend"
+                                android:textColor="@color/text_muted"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Your Ticket card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_bg"
+                        android:padding="16dp">
+
+                        <!-- Header: icon + title + confirmed badge -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="12dp">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_ticket_icon"
+                                app:tint="@color/purple_light"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Your Ticket"
+                                android:textColor="@color/text_primary"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="✓  Confirmed"
+                                android:textColor="@color/success_green"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:background="@drawable/confirmed_badge_bg"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="5dp" />
+                        </LinearLayout>
+
+                        <!-- Divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#1AFFFFFF"
+                            android:layout_marginBottom="14dp" />
+
+                        <!-- Ticket Number + Seat grid -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/field_box_bg"
+                                android:padding="12dp"
+                                android:layout_marginEnd="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="TICKET NUMBER"
+                                    android:textColor="@color/text_muted"
+                                    android:textSize="10sp"
+                                    android:letterSpacing="0.08"
+                                    android:layout_marginBottom="5dp" />
+
+                                <TextView
+                                    android:id="@+id/tvTicketNumber"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:background="@drawable/field_box_bg"
+                                android:padding="12dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="YOUR SEAT"
+                                    android:textColor="@color/text_muted"
+                                    android:textSize="10sp"
+                                    android:letterSpacing="0.08"
+                                    android:layout_marginBottom="5dp" />
+
+                                <TextView
+                                    android:id="@+id/tvSeatNumber"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="@color/purple_light"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- ── VIRTUAL LINK ────────────────────────────────────────── -->
+                <LinearLayout
+                    android:id="@+id/layoutVirtualLink"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="VIRTUAL EVENT"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1"
+                        android:layout_marginBottom="12dp" />
 
                     <Button
-                        android:id="@+id/btnViewTicket"
+                        android:id="@+id/btnJoinMeeting"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:text="🎟  View Digital Ticket"
-                        android:textSize="13sp"
-                        android:backgroundTint="@color/purple_main"
-                        android:textColor="@color/white"
-                        android:layout_marginTop="14dp"
+                        android:text="Join Meeting"
+                        android:textSize="14sp"
+                        android:backgroundTint="#22A855F7"
+                        android:textColor="@color/purple_light"
                         style="@style/Widget.MaterialComponents.Button" />
-
                 </LinearLayout>
-            </LinearLayout>
 
-            <!-- Virtual link (confirmed + virtual only) -->
-            <LinearLayout
-                android:id="@+id/layoutVirtualLink"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- ── PAYMENT STATUS ─────────────────────────────────────── -->
+                <LinearLayout
+                    android:id="@+id/layoutPaymentSection"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Virtual Event"
-                    android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="10dp" />
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="PAYMENT STATUS"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvPaymentStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- Payment rejection reason -->
+                    <TextView
+                        android:id="@+id/tvPaymentRejectionReason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/red_accent"
+                        android:background="#1AEF4444"
+                        android:padding="10dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- ── REFUND STATUS ──────────────────────────────────────── -->
+                <LinearLayout
+                    android:id="@+id/layoutRefundSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/card_bg"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="REFUND STATUS"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.1"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/tvRefundStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- Refund proof image (shown when waiting_acknowledgement) -->
+                    <ImageView
+                        android:id="@+id/ivRefundProof"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:scaleType="centerCrop"
+                        android:layout_marginTop="10dp"
+                        android:background="#11FFFFFF"
+                        android:visibility="gone" />
+
+                    <!-- Rejection reason (shown when rejected) -->
+                    <TextView
+                        android:id="@+id/tvRefundRejectionReason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="@color/red_accent"
+                        android:background="#1AEF4444"
+                        android:padding="10dp"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- ── ACTION BUTTONS ─────────────────────────────────────── -->
+                <Button
+                    android:id="@+id/btnUploadProof"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Upload Payment Proof"
+                    android:textSize="14sp"
+                    android:backgroundTint="@color/purple_main"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    style="@style/Widget.MaterialComponents.Button" />
 
                 <Button
-                    android:id="@+id/btnJoinMeeting"
+                    android:id="@+id/btnAcknowledgeRefund"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:text="🔗 Join Meeting"
+                    android:layout_height="52dp"
+                    android:text="Acknowledge Refund Received"
                     android:textSize="14sp"
-                    android:backgroundTint="#22A855F7"
+                    android:backgroundTint="#33C084FC"
                     android:textColor="@color/purple_light"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
                     style="@style/Widget.MaterialComponents.Button" />
-            </LinearLayout>
 
-            <!-- Payment status (paid events) -->
-            <LinearLayout
-                android:id="@+id/layoutPaymentSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="PAYMENT STATUS"
-                    android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvPaymentStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/btnRequestRefund"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="Request Refund"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <!-- Refund status -->
-            <LinearLayout
-                android:id="@+id/layoutRefundSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone">
+                    android:backgroundTint="#33FBBF24"
+                    android:textColor="@color/yellow_accent"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    style="@style/Widget.MaterialComponents.Button" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvNoRefundNote"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="REFUND STATUS"
-                    android:textColor="@color/text_muted"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:layout_marginBottom="8dp" />
+                    android:text="This event has a no-refund policy. You may still cancel your RSVP below."
+                    android:textColor="@color/yellow_accent"
+                    android:textSize="12sp"
+                    android:background="#22EAB308"
+                    android:padding="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvRefundStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:id="@+id/btnCancelRsvp"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/btn_cancel_rsvp_bg"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvCancelRsvpLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel RSVP"
+                        android:textColor="@color/red_accent"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.04" />
+
+                </LinearLayout>
+
             </LinearLayout>
-
-            <!-- Action buttons -->
-            <Button
-                android:id="@+id/btnUploadProof"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Upload Payment Proof"
-                android:textSize="14sp"
-                android:backgroundTint="@color/purple_main"
-                android:textColor="@color/white"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
-                style="@style/Widget.MaterialComponents.Button" />
-
-            <Button
-                android:id="@+id/btnAcknowledgeRefund"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Acknowledge Refund Received"
-                android:textSize="14sp"
-                android:backgroundTint="#33C084FC"
-                android:textColor="@color/purple_light"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
-                style="@style/Widget.MaterialComponents.Button" />
-
-            <Button
-                android:id="@+id/btnRequestRefund"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Request Refund"
-                android:textSize="14sp"
-                android:backgroundTint="#33FBBF24"
-                android:textColor="@color/yellow_accent"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
-                style="@style/Widget.MaterialComponents.Button" />
-
-            <Button
-                android:id="@+id/btnCancelRsvp"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:text="Cancel RSVP"
-                android:textSize="14sp"
-                android:backgroundTint="#33F87171"
-                android:textColor="@color/red_accent"
-                android:visibility="gone"
-                style="@style/Widget.MaterialComponents.Button" />
-
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
+
 </LinearLayout>

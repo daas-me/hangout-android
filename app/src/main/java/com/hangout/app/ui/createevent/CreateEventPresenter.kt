@@ -2,6 +2,7 @@ package com.hangout.app.ui.createevent
 
 import com.hangout.app.data.CreateEventFormState
 import com.hangout.app.data.CreateEventRequest
+import com.hangout.app.data.EventItem
 import com.hangout.app.repository.Result
 import com.hangout.app.utils.AppCache
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,9 @@ class CreateEventPresenter(
 ): CreateEventContract.Presenter {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    
+    // Store loaded event for access from Activity
+    var loadedEvent: EventItem? = null
 
     // ── Public API ─────────────────────────────────────────────────────────
 
@@ -31,7 +35,91 @@ class CreateEventPresenter(
             view?.showError(error)
             return
         }
-        submit(state, coverImagePath, isDraft = false)
+        // Check profile completion before publishing
+        checkProfileCompletionForPublish(state, coverImagePath)
+    }
+
+    private fun checkProfileCompletionForPublish(state: CreateEventFormState, coverImagePath: String?) {
+        view?.showLoading(true)
+        scope.launch {
+            try {
+                val api = com.hangout.app.network.RetrofitClient.getApiService(context)
+                val response = api.getProfile()
+                view?.showLoading(false)
+
+                if (response.isSuccessful && response.body() != null) {
+                    val profile = response.body()!!
+                    if (!isProfileComplete(profile)) {
+                        view?.showError("Complete your profile to publish events. All fields are required: First name, Last name, Email, Age, Birthdate, Street/Barangay, Municipality/City, State/Province, Country, and Zip Code.")
+                        return@launch
+                    }
+                    // Profile is complete, proceed with publishing
+                    submit(state, coverImagePath, isDraft = false)
+                } else {
+                    view?.showError("Unable to verify profile. Please try again.")
+                }
+            } catch (e: Exception) {
+                view?.showLoading(false)
+                view?.showError("Cannot connect to server.")
+            }
+        }
+    }
+
+    private fun isProfileComplete(profile: com.hangout.app.data.UserProfile): Boolean {
+        // Check all 10 required fields
+        val ageVal = when (val a = profile.age) {
+            is Int    -> a
+            is Double -> a.toInt()
+            is String -> a.toIntOrNull()
+            else      -> null
+        }
+        val hasValidAge = ageVal != null && ageVal > 0
+        
+        return profile.firstname.isNotBlank() &&
+                profile.lastname.isNotBlank() &&
+                !profile.email.isNullOrBlank() &&
+                hasValidAge &&
+                !profile.birthdate.isNullOrBlank() &&
+                !profile.street.isNullOrBlank() &&
+                !profile.city.isNullOrBlank() &&
+                !profile.state.isNullOrBlank() &&
+                !profile.country.isNullOrBlank() &&
+                !profile.zipcode.isNullOrBlank()
+    }
+
+    override fun loadEventForEdit(eventId: Long) {
+        view?.showLoading(true)
+        scope.launch {
+            when (val result = model.loadEventForEdit(eventId)) {
+                is Result.Success -> {
+                    loadedEvent = result.data
+                    view?.showLoading(false)
+                    view?.onEventLoaded(eventId)
+                }
+                is Result.Error -> {
+                    view?.showLoading(false)
+                    view?.showError(result.message)
+                }
+            }
+        }
+    }
+
+    override fun unpublishEvent(eventId: Long) {
+        view?.showLoading(true)
+        scope.launch {
+            val reason = "Event unpublished by host."
+            when (val result = model.unpublishEvent(eventId, reason)) {
+                is Result.Success -> {
+                    view?.showLoading(false)
+                    view?.showSuccess("Event unpublished successfully")
+                    view?.onEventUnpublished()
+                }
+                is Result.Error -> {
+                    view?.showLoading(false)
+                    view?.showError(result.message)
+                }
+            }
+        }
     }
 
     override fun detachView() {

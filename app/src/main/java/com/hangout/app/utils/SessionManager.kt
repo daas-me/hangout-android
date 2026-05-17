@@ -10,19 +10,30 @@ class SessionManager(context: Context) {
 
     companion object {
         private const val KEY_TOKEN     = "hangout_token"
+        private const val KEY_USER_ID   = "hangout_user_id"
         private const val KEY_EMAIL     = "hangout_email"
         private const val KEY_FIRSTNAME = "hangout_firstname"
     }
 
-    fun saveSession(token: String, email: String, firstname: String) {
-        prefs.edit()
+    fun saveSession(token: String, email: String, firstname: String, userId: Long? = null) {
+        val editor = prefs.edit()
             .putString(KEY_TOKEN, token)
             .putString(KEY_EMAIL, email)
             .putString(KEY_FIRSTNAME, firstname)
-            .apply()
+        
+        if (userId != null) {
+            editor.putLong(KEY_USER_ID, userId)
+        }
+        
+        editor.apply()
     }
 
     fun getToken(): String? = prefs.getString(KEY_TOKEN, null)
+
+    fun getUserId(): Long? {
+        val id = prefs.getLong(KEY_USER_ID, -1)
+        return if (id == -1L) null else id
+    }
 
     fun getEmail(): String? = prefs.getString(KEY_EMAIL, null)
 

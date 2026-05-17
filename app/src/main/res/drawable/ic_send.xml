@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!--
+        Send icon — paper plane style.
+        Clean, modern, fills the canvas with balanced negative space.
+        Use with a circular background drawable (see bg_send_button.xml).
+    -->
+
+    <!-- Main body — upper triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M21.5,2.5L9.0,14.0L12.5,21.5L21.5,2.5Z" />
+
+    <!-- Lower body — left triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M21.5,2.5L2.5,9.5L9.0,14.0L21.5,2.5Z" />
+
+    <!-- Fold shadow — gives the folded paper plane depth -->
+    <path
+        android:fillColor="#00000033"
+        android:pathData="M9.0,14.0L11.2,16.8L12.5,21.5L9.0,14.0Z" />
+
+</vector>

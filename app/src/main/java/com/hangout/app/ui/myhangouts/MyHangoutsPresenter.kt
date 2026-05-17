@@ -36,6 +36,17 @@ class MyHangoutsPresenter(
         }
     }
 
+    override fun loadFavorites() {
+        view?.showLoading(true)
+        scope.launch {
+            when (val r = model.getFavoriteEvents()) {
+                is Result.Success -> view?.showFavoriteEvents(r.data)
+                is Result.Error   -> view?.showError(r.message)
+            }
+            view?.showLoading(false)
+        }
+    }
+
     override fun cancelRsvp(eventId: Long) {
         view?.showLoading(true)
         scope.launch {
@@ -44,6 +55,15 @@ class MyHangoutsPresenter(
                 is Result.Error   -> view?.showError(r.message)
             }
             view?.showLoading(false)
+        }
+    }
+
+    override fun unfavorite(eventId: Long) {
+        scope.launch {
+            when (val r = model.unfavorite(eventId)) {
+                is Result.Success -> view?.onUnfavoriteSuccess(eventId)
+                is Result.Error   -> view?.showError(r.message)
+            }
         }
     }
 

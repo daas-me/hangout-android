@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Outer circle -->
+    <path
+        android:pathData="M12,2 A10,10 0 1,0 12,22 A10,10 0 1,0 12,2 Z"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="1.6"/>
+
+    <!-- Solid needle (NE direction, filled) -->
+    <path
+        android:pathData="M15.3,6.4 L10.3,11 L13.7,13 Z"
+        android:fillColor="#B57BEE"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="0.5"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"/>
+
+    <!-- Hollow needle (SW direction, opposite, outlined only) -->
+    <path
+        android:pathData="M8.8,17.6 L10.3,11 L13.7,13 Z"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="1.2"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"/>
+
+</vector>

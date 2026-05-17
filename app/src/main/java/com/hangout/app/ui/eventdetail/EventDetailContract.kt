@@ -9,13 +9,18 @@ interface EventDetailContract {
         fun showMessage(message: String)
         fun onRsvpSuccess()
         fun onRsvpRemoved()
+        fun onRsvpCancelled(isPaid: Boolean)
         fun onRsvpStatusLoaded(isRsvped: Boolean, paymentStatus: String?)
+        fun onFavoriteStatusLoaded(isFavorite: Boolean)
+        fun onFavoriteToggled(isFavorite: Boolean)
     }
     interface Presenter {
         fun loadEvent(event: EventItem)
         fun checkRsvpStatus(eventId: Long)
         fun rsvp(eventId: Long)
-        fun removeRsvp(eventId: Long)
+        fun removeRsvp(eventId: Long, reason: String = "")
+        fun checkFavoriteStatus(eventId: Long)
+        fun toggleFavorite(eventId: Long, currentlyFavorited: Boolean)
         fun detachView()
     }
 }

@@ -29,7 +29,7 @@
             android:paddingHorizontal="20dp"
             android:paddingBottom="32dp">
 
-            <!-- Header -->
+            <!-- ── Header ──────────────────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,18 +45,34 @@
                 android:text="Upload your proof of payment to reserve your spot"
                 android:textColor="@color/text_muted"
                 android:textSize="13sp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginTop="4dp" />
 
-            <!-- Event info card -->
+            <!-- ── Divider ─────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ── SECTION 1: Event Summary ───────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EVENT SUMMARY"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="8dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/card_bg"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
+                android:padding="16dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -82,7 +98,15 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- Payment info -->
+            <!-- ── Divider ─────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ── SECTION 2: Payment Details ────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,8 +122,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/card_bg"
-                android:padding="14dp"
-                android:layout_marginBottom="16dp">
+                android:padding="14dp">
 
                 <!-- Method -->
                 <LinearLayout
@@ -107,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
+                    android:paddingBottom="12dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -126,13 +149,20 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
+                <!-- Inner divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#1AFFFFFF"
+                    android:layout_marginBottom="12dp" />
+
                 <!-- Account name -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
+                    android:paddingBottom="12dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -150,6 +180,13 @@
                         android:textSize="14sp"
                         android:textStyle="bold" />
                 </LinearLayout>
+
+                <!-- Inner divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#1AFFFFFF"
+                    android:layout_marginBottom="12dp" />
 
                 <!-- Account number + copy -->
                 <LinearLayout
@@ -187,23 +224,31 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Instructions -->
+            <!-- ── Divider ─────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ── SECTION 3: Instructions ────────────────────────── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="INSTRUCTIONS"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_marginBottom="8dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/card_info_bg"
-                android:padding="14dp"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Instructions"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp" />
+                android:padding="14dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -214,46 +259,77 @@
                     android:lineSpacingExtra="4dp" />
             </LinearLayout>
 
-            <!-- No-refund policy -->
+            <!-- ── Divider ─────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ── SECTION 4: No-refund policy (conditional) ──────── -->
             <LinearLayout
                 android:id="@+id/layoutNoRefund"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/error_bg"
-                android:padding="14dp"
-                android:layout_marginBottom="16dp"
                 android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="No Refund Policy"
+                    android:text="REFUND POLICY"
                     android:textColor="@color/red_accent"
-                    android:textSize="13sp"
+                    android:textSize="11sp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="6dp" />
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="8dp" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="This event does not offer refunds. By submitting payment, you acknowledge and accept this policy."
-                    android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="2dp"
-                    android:layout_marginBottom="10dp" />
+                    android:orientation="vertical"
+                    android:background="@drawable/error_bg"
+                    android:padding="14dp">
 
-                <CheckBox
-                    android:id="@+id/cbAcknowledge"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No Refund Policy"
+                        android:textColor="@color/red_accent"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="6dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="This event does not offer refunds. By submitting payment, you acknowledge and accept this policy."
+                        android:textColor="@color/text_muted"
+                        android:textSize="12sp"
+                        android:lineSpacingExtra="2dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <CheckBox
+                        android:id="@+id/cbAcknowledge"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="I acknowledge and accept the no refunds policy"
+                        android:textColor="@color/text_primary"
+                        android:textSize="13sp"
+                        android:buttonTint="@color/purple_main" />
+                </LinearLayout>
+
+                <!-- Divider after refund section -->
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="I acknowledge and accept the no refunds policy"
-                    android:textColor="@color/text_primary"
-                    android:textSize="13sp"
-                    android:buttonTint="@color/purple_main" />
+                    android:layout_height="1dp"
+                    android:background="#22FFFFFF"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="16dp" />
             </LinearLayout>
 
-            <!-- Upload section label -->
+            <!-- ── SECTION 5: Upload ───────────────────────────────── -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -264,42 +340,78 @@
                 android:letterSpacing="0.1"
                 android:layout_marginBottom="10dp" />
 
-            <!-- Pick buttons (gallery / camera) -->
+            <!-- Pick buttons -->
             <LinearLayout
                 android:id="@+id/layoutPickButtons"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="130dp"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:background="@drawable/cover_photo_bg"
-                android:layout_marginBottom="12dp">
+                android:background="@drawable/upload_area_bg"
+                android:padding="16dp">
 
-                <Button
+                <!-- Gallery -->
+                <LinearLayout
                     android:id="@+id/btnPickGallery"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="📁 Gallery"
-                    android:textSize="13sp"
-                    android:backgroundTint="@color/bg_card"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginHorizontal="12dp"
-                    style="@style/Widget.MaterialComponents.Button" />
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@drawable/upload_pick_btn_bg"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                <Button
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_gallery"
+                        app:tint="@color/purple_light"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GALLERY"
+                        android:textColor="@color/purple_light"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+                </LinearLayout>
+
+                <!-- Camera -->
+                <LinearLayout
                     android:id="@+id/btnPickCamera"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="📷 Camera"
-                    android:textSize="13sp"
-                    android:backgroundTint="@color/bg_card"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginHorizontal="12dp"
-                    style="@style/Widget.MaterialComponents.Button" />
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:background="@drawable/upload_pick_btn_bg"
+                    android:layout_marginStart="8dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_camera"
+                        app:tint="@color/purple_light"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CAMERA"
+                        android:textColor="@color/purple_light"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08" />
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Preview (hidden until image selected) -->
+            <!-- Preview -->
             <LinearLayout
                 android:id="@+id/layoutPreview"
                 android:layout_width="match_parent"
@@ -307,7 +419,6 @@
                 android:orientation="vertical"
                 android:background="@drawable/card_bg"
                 android:padding="12dp"
-                android:layout_marginBottom="12dp"
                 android:visibility="gone">
 
                 <ImageView
@@ -354,14 +465,21 @@
                 android:indeterminate="true"
                 android:visibility="gone"
                 android:indeterminateTint="@color/purple_main"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="12dp" />
 
-            <!-- Footer buttons -->
+            <!-- ── Divider ─────────────────────────────────────────── -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22FFFFFF"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- ── SECTION 6: Actions ──────────────────────────────── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="4dp">
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/btnCancel"

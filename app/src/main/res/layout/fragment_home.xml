@@ -11,47 +11,97 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="24dp"
-        android:paddingBottom="100dp"> <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="24dp"
-        android:layout_marginBottom="32dp">
+        android:paddingBottom="100dp">
 
-        <TextView
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="32dp">
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="HangOut"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_primary"
-            android:fontFamily="@font/syne_bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hang"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/syne_bold" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Out"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple_main"
+                android:fontFamily="@font/syne_bold" />
+        </LinearLayout>
 
         <FrameLayout
-            android:layout_width="40dp"
-            android:layout_height="40dp">
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="4dp">
+
+            <ImageView
+                android:id="@+id/ivMessages"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_icon_bg"
+                android:src="@drawable/ic_mail"
+                app:tint="@color/text_primary"
+                android:padding="8dp"
+                android:contentDescription="Messages" />
+
+            <TextView
+                android:id="@+id/tvMessageBadge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="top|end"
+                android:background="@color/purple_main"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/ivNotifications"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
                 android:src="@drawable/ic_bell"
-                android:padding="8dp"
                 android:background="@drawable/btn_icon_bg"
+                android:padding="8dp"
+                app:tint="@color/text_primary"
                 android:clickable="true"
                 android:focusable="true"
-                app:tint="@color/text_primary"/>
+                android:contentDescription="Notifications" />
 
-            <View
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+            <TextView
+                android:id="@+id/tvNotifBadge"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_gravity="top|end"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="2dp"
-                android:background="@drawable/dot_active"
-                android:backgroundTint="@color/red_accent" />
+                android:background="@drawable/badge_format_bg"
+                android:textColor="@color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
 
@@ -60,12 +110,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="32dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="top">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,30 +129,34 @@
 
                 <TextView
                     android:id="@+id/tvUserName"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="User"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/purple_light"
-                    android:fontFamily="@font/syne_bold" />
+                    android:textColor="@color/purple_main"
+                    android:fontFamily="@font/syne_bold"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Here's what's happening in your network"
-                android:textSize="14sp"
-                android:textColor="@color/text_muted"
-                android:fontFamily="@font/dm_sans"
-                android:layout_marginTop="4dp" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Here's what's happening in your network"
+            android:textSize="14sp"
+            android:textColor="@color/text_muted"
+            android:fontFamily="@font/dm_sans"
+            android:paddingHorizontal="24dp"
+            android:layout_marginBottom="16dp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="40dp"
             app:cardBackgroundColor="@color/card_bg"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp">
@@ -124,7 +179,7 @@
                         android:layout_height="48dp"
                         android:src="@drawable/ic_calendar"
                         android:padding="12dp"
-                        android:background="@drawable/btn_pill_purple"
+                        android:background="@drawable/stat_icon_purple_gradient"
                         android:layout_marginBottom="8dp"
                         app:tint="@color/white"/>
                     <TextView
@@ -156,7 +211,7 @@
                         android:layout_height="48dp"
                         android:src="@drawable/ic_users"
                         android:padding="12dp"
-                        android:background="@drawable/btn_pill_purple"
+                        android:background="@drawable/stat_icon_purple_gradient"
                         android:layout_marginBottom="8dp"
                         app:tint="@color/white"/>
                     <TextView
@@ -188,7 +243,7 @@
                         android:layout_height="48dp"
                         android:src="@drawable/ic_trending"
                         android:padding="12dp"
-                        android:background="@drawable/btn_pill_red"
+                        android:background="@drawable/stat_icon_red_gradient"
                         android:layout_marginBottom="8dp"
                         app:tint="@color/white"/>
                     <TextView
@@ -217,7 +272,7 @@
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="20dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -247,7 +302,7 @@
             android:scrollbars="none"
             android:clipToPadding="false"
             android:paddingHorizontal="24dp"
-            android:layout_marginBottom="32dp">
+            android:layout_marginBottom="40dp">
 
             <LinearLayout
                 android:id="@+id/layoutHostingContainer"
@@ -266,7 +321,7 @@
             android:orientation="horizontal"
             android:paddingHorizontal="24dp"
             android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="20dp">
 
             <ImageView
                 android:layout_width="20dp"

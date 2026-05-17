@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/card_bg"
     android:padding="14dp"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="10dp">
 
-    <!-- Top row: avatar + name + status -->
+    <!-- Top row: avatar + name/email + status badge -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,12 +17,11 @@
 
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:background="@drawable/avatar_bg"
             android:src="@drawable/ic_user"
-            android:padding="8dp"
-            app:tint="@color/text_muted"
+            android:scaleType="centerCrop"
             android:layout_marginEnd="12dp" />
 
         <LinearLayout
@@ -38,92 +36,259 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tvAttendeeEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/text_muted"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvStatusBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="end">
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvStatusBadge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="2dp" />
+    <TextView
+        android:id="@+id/tvCancellationReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/card_bg"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:padding="8dp"
+        android:textColor="@color/text_muted"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+    <!-- Seat + Registered row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <!-- Seat chip (tappable to edit) -->
+        <LinearLayout
+            android:id="@+id/layoutSeat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/chip_purple_bg"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp">
 
             <TextView
                 android:id="@+id/tvSeatNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/purple_light"
                 android:textSize="11sp"
-                android:visibility="gone" />
+                android:textColor="@color/purple_light"
+                android:textStyle="bold"
+                android:text="No Seat" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_edit"
+                android:alpha="0.6" />
         </LinearLayout>
+
+        <!-- Registered date -->
+        <TextView
+            android:id="@+id/tvRegisteredDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/text_muted"
+            android:textSize="11sp"
+            android:layout_marginStart="10dp"
+            android:gravity="end" />
     </LinearLayout>
 
-    <!-- Action buttons row -->
+    <!-- Refund status chip -->
+    <TextView
+        android:id="@+id/tvRefundChip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="4dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1AFFFFFF"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Attendance row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp">
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Attendance"
+            android:textColor="@color/text_muted"
+            android:textSize="12sp" />
+
+        <!-- Attendance dropdown button -->
+        <LinearLayout
+            android:id="@+id/btnAttendanceDropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/chip_dark_bg"
+            android:paddingStart="12dp"
+            android:paddingEnd="8dp">
+
+            <TextView
+                android:id="@+id/tvAttendanceStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Not Marked"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_muted" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_chevron_down"
+                android:alpha="0.6" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Payment actions -->
+    <LinearLayout
+        android:id="@+id/layoutPaymentActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btnViewProof"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
             android:text="View Proof"
             android:textSize="11sp"
-            android:backgroundTint="#33A855F7"
+            android:textStyle="bold"
             android:textColor="@color/purple_light"
+            android:backgroundTint="#1A7C3AED"
             android:layout_marginEnd="6dp"
+            android:stateListAnimator="@null"
             android:visibility="gone"
             style="@style/Widget.MaterialComponents.Button" />
 
         <Button
             android:id="@+id/btnApprove"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
             android:text="Approve"
             android:textSize="11sp"
-            android:backgroundTint="#334ADE80"
-            android:textColor="@color/success_green"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/success_green"
             android:layout_marginEnd="6dp"
+            android:stateListAnimator="@null"
             android:visibility="gone"
             style="@style/Widget.MaterialComponents.Button" />
 
         <Button
             android:id="@+id/btnReject"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
             android:text="Reject"
             android:textSize="11sp"
-            android:backgroundTint="#33F87171"
-            android:textColor="@color/red_accent"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red_accent"
             android:layout_marginEnd="6dp"
+            android:stateListAnimator="@null"
             android:visibility="gone"
             style="@style/Widget.MaterialComponents.Button" />
 
         <Button
             android:id="@+id/btnAssignSeat"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="36dp"
+            android:layout_weight="1"
             android:text="Assign Seat"
             android:textSize="11sp"
-            android:backgroundTint="#33A855F7"
-            android:textColor="@color/purple_light"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/purple_main"
+            android:stateListAnimator="@null"
             android:visibility="gone"
+            style="@style/Widget.MaterialComponents.Button" />
+    </LinearLayout>
+
+    <!-- Refund actions -->
+    <LinearLayout
+        android:id="@+id/layoutRefundActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btnApproveRefund"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Approve Refund"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/success_green"
+            android:layout_marginEnd="6dp"
+            android:stateListAnimator="@null"
+            style="@style/Widget.MaterialComponents.Button" />
+
+        <Button
+            android:id="@+id/btnRejectRefund"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:text="Decline"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/red_accent"
+            android:stateListAnimator="@null"
             style="@style/Widget.MaterialComponents.Button" />
     </LinearLayout>
 </LinearLayout>

@@ -15,21 +15,37 @@ class PaymentProofModel(private val context: Context) {
 
     suspend fun uploadPaymentProof(eventId: Long, imageFile: File): Result<MessageResponse> {
         return try {
-            val requestFile = imageFile.asRequestBody("image/*".toMediaTypeOrNull())
-            val part = MultipartBody.Part.createFormData("proof", imageFile.name, requestFile)
+            val mimeType = when (imageFile.extension.lowercase()) {
+                "jpg", "jpeg" -> "image/jpeg"
+                "png"         -> "image/png"
+                "webp"        -> "image/webp"
+                else          -> "image/jpeg"
+            }
+            val requestFile = imageFile.asRequestBody(mimeType.toMediaTypeOrNull())
+            val part = MultipartBody.Part.createFormData("paymentProof", imageFile.name, requestFile)
             val response = api.uploadPaymentProof(eventId, part)
             if (response.isSuccessful) {
                 AppCache.bust(context, AppCache.Keys.ATTENDING_EVENTS)
                 Result.Success(response.body() ?: MessageResponse("Submitted"))
+                Result.Success(response.body() ?: MessageResponse("Submitted"))
             } else {
+                // Parse error body in its own try-catch — Connection: close can cause
+                // errorBody().string() to throw, which was falling into the outer catch
+                // and showing "Cannot connect to server" even though the request succeeded.
                 val msg = try {
-                    org.json.JSONObject(response.errorBody()?.string() ?: "")
-                        .optString("message", "Submission failed")
-                } catch (_: Exception) { "Submission failed" }
+                    val raw = response.errorBody()?.string().orEmpty()
+                    if (raw.isNotBlank()) {
+                        org.json.JSONObject(raw).optString("message", "Submission failed (${response.code()})")
+                    } else {
+                        "Submission failed (${response.code()})"
+                    }
+                } catch (_: Exception) {
+                    "Submission failed (${response.code()})"
+                }
                 Result.Error(msg)
             }
         } catch (e: Exception) {
-            Result.Error("Cannot connect to server.")
+            Result.Error("Network error: ${e.localizedMessage ?: "Could not reach server."}")
         }
     }
 }

@@ -17,7 +17,8 @@ interface AttendingDashboardContract {
         fun loadEvent(event: EventItem)
         fun cancelRsvp(eventId: Long)
         fun requestRefund(eventId: Long, reason: String)
-        fun acknowledgeRefund(eventId: Long)
+        fun acknowledgeRefund(eventId: Long, choice: String, reason: String?)
+        fun refreshEvent(eventId: Long)
         fun detachView()
     }
 }

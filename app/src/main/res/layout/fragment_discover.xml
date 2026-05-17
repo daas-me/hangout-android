@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bg_dark">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/bg_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="32dp"
-        android:paddingHorizontal="24dp"
-        android:paddingBottom="16dp">
+        android:paddingHorizontal="24dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -24,19 +29,17 @@
             android:fontFamily="@font/syne_bold"
             android:layout_marginBottom="20dp" />
 
-        <androidx.cardview.widget.CardView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            app:cardBackgroundColor="@color/input_bg"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
+            android:background="@drawable/search_input_bg"
             android:layout_marginBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingHorizontal="16dp">
 
                 <ImageView
@@ -51,16 +54,16 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@null"
-                    android:hint="Search for events..."
-                    android:textColorHint="@color/text_muted"
-                    android:textColor="@color/text_primary"
-                    android:textSize="15sp"
                     android:fontFamily="@font/dm_sans"
-                    android:paddingHorizontal="12dp"
+                    android:hint="Search for events..."
+                    android:imeOptions="actionSearch"
                     android:inputType="text"
-                    android:imeOptions="actionSearch"/>
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_muted"
+                    android:textSize="15sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </FrameLayout>
     </LinearLayout>
 
     <HorizontalScrollView
@@ -77,6 +80,7 @@
             android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/btnFilterAll"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="All"
@@ -86,61 +90,59 @@
                 android:background="@drawable/btn_pill_purple"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:layout_marginEnd="12dp"/>
+                android:layout_marginEnd="12dp"
+                android:tag=""/>
 
             <TextView
+                android:id="@+id/btnFilterFree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Technology"
+                android:text="Free"
                 android:textSize="14sp"
                 android:textColor="@color/text_muted"
                 android:fontFamily="@font/dm_sans"
                 android:background="@drawable/btn_ghost"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:layout_marginEnd="12dp"/>
+                android:layout_marginEnd="12dp"
+                android:tag="free"/>
 
             <TextView
+                android:id="@+id/btnFilterPaid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Music"
+                android:text="Paid"
                 android:textSize="14sp"
                 android:textColor="@color/text_muted"
                 android:fontFamily="@font/dm_sans"
                 android:background="@drawable/btn_ghost"
                 android:paddingHorizontal="20dp"
                 android:paddingVertical="10dp"
-                android:layout_marginEnd="12dp"/>
+                android:layout_marginEnd="12dp"
+                android:tag="paid"/>
 
             <TextView
+                android:id="@+id/btnFilterToday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Art &amp; Design"
+                android:text="Today"
                 android:textSize="14sp"
                 android:textColor="@color/text_muted"
                 android:fontFamily="@font/dm_sans"
                 android:background="@drawable/btn_ghost"
                 android:paddingHorizontal="20dp"
-                android:paddingVertical="10dp"/>
+                android:paddingVertical="10dp"
+                android:tag="today"/>
         </LinearLayout>
     </HorizontalScrollView>
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDiscoverEvents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingHorizontal="24dp"
-        android:paddingBottom="100dp"> <LinearLayout
-        android:id="@+id/layoutDiscoverEventsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:paddingBottom="100dp"
+        android:background="@color/bg_dark" />
 
-        <include layout="@layout/item_event_card" />
-        <include layout="@layout/item_event_card" />
-        <include layout="@layout/item_event_card" />
-
-    </LinearLayout>
-    </ScrollView>
-
-</LinearLayout>
+</LinearLayout></androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

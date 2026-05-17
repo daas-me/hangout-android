@@ -24,11 +24,14 @@ class AuthPresenter(
         scope.launch {
             when (val result = model.login(email, password)) {
                 is Result.Success -> {
+                    android.util.Log.d("Auth", "Login SUCCESS - API Response: id=${result.data.id}, email=${result.data.email}, firstname=${result.data.firstname}")
                     model.saveSession(
                         result.data.token,
                         result.data.email,
-                        result.data.firstname
+                        result.data.firstname,
+                        result.data.id
                     )
+                    android.util.Log.d("Auth", "Session saved with userId=${result.data.id}")
                     view?.showLoading(false)
                     view?.onLoginSuccess(
                         result.data.token,
@@ -37,6 +40,7 @@ class AuthPresenter(
                     )
                 }
                 is Result.Error -> {
+                    android.util.Log.d("Auth", "Login ERROR - ${result.message}")
                     view?.showLoading(false)
                     view?.showError(result.message)
                 }

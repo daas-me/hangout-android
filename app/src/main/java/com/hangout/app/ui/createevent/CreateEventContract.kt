@@ -9,12 +9,16 @@ interface CreateEventContract {
         fun showError(message: String)
         fun showSuccess(message: String)
         fun onEventCreated(eventId: Long, isDraft: Boolean)
+        fun onEventLoaded(eventId: Long)
+        fun onEventUnpublished()
         fun updateStepIndicator(currentStep: Int, totalSteps: Int)
     }
 
     interface Presenter {
         fun saveDraft(state: CreateEventFormState, coverImagePath: String?)
         fun publishEvent(state: CreateEventFormState, coverImagePath: String?)
+        fun loadEventForEdit(eventId: Long)
+        fun unpublishEvent(eventId: Long)
         fun detachView()
     }
 }

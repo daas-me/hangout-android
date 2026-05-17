@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/nav_discover"
-        android:icon="@drawable/ic_search"
+        android:icon="@drawable/ic_discover"
         android:title="Discover" />
 
     <item
@@ -17,12 +17,13 @@
 
     <item
         android:id="@+id/nav_hangouts"
-        android:icon="@drawable/ic_calendar"
+        android:icon="@drawable/ic_hangouts"
         android:title="HangOuts" />
 
 
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_user"
-        android:title="Profile" />
+        android:title="Profile"
+        android:titleCondensed="Profile" />
 </menu>
