@@ -22,6 +22,7 @@ import com.hangout.app.databinding.ItemAttendingCardMyhangoutsBinding
 import com.hangout.app.databinding.ItemFavoritesCardBinding
 import com.hangout.app.ui.attendingdashboard.AttendingDashboardFragment
 import com.hangout.app.ui.components.createStyledAlertDialog
+
 import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.ui.hostdashboard.HostDashboardFragment
 import com.hangout.app.utils.EventHolder
@@ -69,20 +70,10 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
         setupSearch()
         setupTabs()
         setupFilters()
-
-        // ── Setup pull-to-refresh ──────────────────────────────────
-        binding.swipeRefresh.setColorSchemeResources(R.color.purple_main)
-        binding.swipeRefresh.setOnRefreshListener {
-            refreshCurrentTab()
-        }
-
-        // ── Setup scroll listener to only allow pull-to-refresh at top ──────────────
-        binding.scrollViewContent.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            binding.swipeRefresh.isEnabled = (scrollY == 0)
-        }
 
         activateTab(ActiveTab.HOSTING)
         
@@ -92,12 +83,14 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
         }
     }
 
-    private fun refreshCurrentTab() {
-        when (activeTab) {
-            ActiveTab.HOSTING   -> presenter.loadHosting()
-            ActiveTab.ATTENDING -> presenter.loadAttending()
-            ActiveTab.FAVORITES -> presenter.loadFavorites()
-        }
+    // ── Contract.View ──────────────────────────────────────────────────────
+
+    override fun showLoading(show: Boolean) {
+        binding.progressBar.showIf(show)
+    }
+
+    override fun showError(message: String) {
+        toast(message)
     }
 
     // ── Search ─────────────────────────────────────────────────────────────
@@ -248,15 +241,6 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
         binding.filterSpinner.setAdapter(adapter)
         binding.filterSpinner.setText(options[attendingFilterType.ordinal], false)
     }
-
-    // ── Contract.View ──────────────────────────────────────────────────────
-
-    override fun showLoading(show: Boolean) {
-        binding.progressBar.showIf(show)
-        binding.swipeRefresh.isRefreshing = show
-    }
-
-    override fun showError(message: String) = toast(message)
 
     override fun showHostingEvents(events: List<EventItem>) {
         hostingEvents = events

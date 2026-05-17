@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="100dp">
+
+        <!-- Header -->
+        <View
+            android:layout_width="150dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/skeleton_bg"
+            android:tag="skeleton_item" />
+
+        <!-- Search bar skeleton -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/skeleton_bg"
+            android:tag="skeleton_item" />
+
+        <!-- Tabs skeleton -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/skeleton_bg"
+            android:tag="skeleton_item" />
+
+        <!-- Event cards skeleton -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Card 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+
+            <!-- Card 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+
+            <!-- Card 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginBottom="12dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="200dp"
+                    android:layout_height="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="150dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -14,6 +14,7 @@ import com.hangout.app.data.EventItem
 import com.hangout.app.utils.EventHolder
 import com.hangout.app.databinding.FragmentDiscoverBinding
 import com.hangout.app.ui.eventdetail.EventDetailFragment
+
 import com.hangout.app.utils.toast
 
 class DiscoverFragment : Fragment(), DiscoverContract.View {
@@ -77,7 +78,7 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
         // Load initial events
         presenter.loadEvents(search = currentSearch, filter = currentFilter)
 
-        // ── Setup pull-to-refresh ──────────────────────────────────
+        // ── Setup pull-to-refresh (manual only) ──────────────────────────────────
         binding.swipeRefresh.setColorSchemeResources(R.color.purple_main)
         binding.swipeRefresh.setOnRefreshListener {
             loadEvents()
@@ -122,15 +123,19 @@ class DiscoverFragment : Fragment(), DiscoverContract.View {
     // ── DiscoverContract.View ──────────────────────────────────────────────
 
     override fun showLoading(show: Boolean) {
+        // No skeleton loading, just manage refresh state
         binding.swipeRefresh.isRefreshing = show
     }
 
     override fun showError(message: String) {
+        binding.swipeRefresh.isRefreshing = false
         toast(message)
         showEvents(emptyList())
     }
 
     override fun showEvents(events: List<EventItem>) {
+        binding.swipeRefresh.isRefreshing = false
+        
         if (events.isEmpty()) {
             adapter.clearEvents()
             toast("No events found")

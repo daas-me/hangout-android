@@ -17,13 +17,24 @@ class EventDetailPresenter(
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var favoriteCount = 0
+    private var lastLoadedEventId: Long? = null
     private companion object {
         const val MAX_FAVORITES = 10
     }
 
     override fun loadEvent(event: EventItem) {
+        // Skip API call if we already loaded this specific event
+        event.id?.let { eventId ->
+            if (lastLoadedEventId == eventId) {
+                // Event already cached, just display it
+                view?.showEvent(event)
+                return
+            }
+        }
+
         // Fetch full event details to ensure complete host information is loaded
         event.id?.let {
+            lastLoadedEventId = it
             scope.launch {
                 when (val r = model.getEventDetails(it)) {
                     is Result.Success -> {
