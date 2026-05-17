@@ -16,6 +16,7 @@ import com.hangout.app.databinding.FragmentEventDetailBinding
 import com.hangout.app.ui.components.createStyledAlertDialog
 import com.hangout.app.ui.components.createStyledDialogEditText
 import com.hangout.app.ui.components.ProfileInformationDialogFragment
+import com.hangout.app.ui.components.SkeletonLoadingHelper
 import com.hangout.app.ui.createevent.CreateEventActivity
 import com.hangout.app.ui.hostdashboard.HostDashboardFragment
 import com.hangout.app.ui.paymentproof.PaymentProofBottomSheet
@@ -68,9 +69,11 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val event = EventHolder.currentEvent ?: return
-        presenter.loadEvent(event)
+        
+        // Display event immediately from cache (no auto-refresh)
+        showEvent(event)
 
-        // ── Setup pull-to-refresh ──────────────────────────────────
+        // ── Setup pull-to-refresh (manual refresh only) ──────────────────────────────────
         binding.swipeRefresh.setColorSchemeResources(R.color.purple_main)
         binding.swipeRefresh.setOnRefreshListener {
             val latest = EventHolder.currentEvent
@@ -85,6 +88,10 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     // ── EventDetailContract.View ───────────────────────────────────────────
 
     override fun showEvent(event: EventItem) {
+        // Hide skeleton when event is loaded
+        val skeletonContainer = binding.root.findViewById<View>(R.id.skeletonContainer)
+        SkeletonLoadingHelper.hideSkeleton(skeletonContainer, binding.swipeRefresh)
+        
         android.util.Log.d("EventDetail", "=== showEvent START ===")
         isHost = checkIfUserIsHost(event)
         android.util.Log.d("EventDetail", "After checkIfUserIsHost: isHost=$isHost")
@@ -110,7 +117,13 @@ class EventDetailFragment : Fragment(), EventDetailContract.View {
     }
 
     override fun showLoading(show: Boolean) {
-        binding.swipeRefresh.isRefreshing = show
+        val skeletonContainer = binding.root.findViewById<View>(R.id.skeletonContainer)
+        if (show) {
+            SkeletonLoadingHelper.showSkeleton(skeletonContainer, binding.swipeRefresh)
+        } else {
+            SkeletonLoadingHelper.hideSkeleton(skeletonContainer, binding.swipeRefresh)
+            binding.swipeRefresh.isRefreshing = false
+        }
     }
 
     override fun showMessage(message: String) = toast(message)

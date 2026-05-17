@@ -1,196 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark">
 
+    <!-- Header Section (Fixed) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="32dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My HangOuts"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:fontFamily="@font/syne_bold"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Search Bar -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/search_input_bg"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_search"
+                    app:tint="@color/text_muted" />
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:paddingHorizontal="12dp"
+                    android:hint="Search HangOuts..."
+                    android:textColorHint="@color/text_muted"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="@font/dm_sans"
+                    android:textSize="14sp"
+                    android:background="@android:color/transparent"
+                    android:inputType="text"
+                    android:imeOptions="actionSearch"/>
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Tabs -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/transparent"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/tab_container_bg"
+                android:paddingHorizontal="4dp"
+                android:paddingVertical="4dp">
+
+                <Button
+                    android:id="@+id/btnTabHosting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Hosting"
+                    android:textSize="13sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/dm_sans"
+                    android:textStyle="bold"
+                    android:background="@drawable/tab_active_bg"
+                    android:stateListAnimator="@null"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnTabAttending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Attending"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/dm_sans"
+                    android:background="@android:color/transparent"
+                    android:stateListAnimator="@null"
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnTabFavorites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:text="Favorites"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/dm_sans"
+                    android:background="@android:color/transparent"
+                    android:stateListAnimator="@null"
+                    android:paddingHorizontal="16dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Filter Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/filterContainer"
+            android:layout_width="240dp"
+            android:layout_height="52dp"
+            android:theme="@style/DarkInputTheme"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:boxStrokeColor="@color/input_stroke_selector"
+            app:boxBackgroundColor="@color/input_bg"
+            app:boxStrokeWidth="1dp"
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusTopStart="8dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/filterSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:textSize="13sp"
+                android:fontFamily="@font/dm_sans"
+                android:inputType="none"
+                android:focusable="false"
+                android:cursorVisible="false"
+                android:paddingHorizontal="12dp"
+                android:gravity="center_vertical"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <!-- Cards Scrolling Section -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollViewContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingBottom="100dp"
-        android:fillViewport="true">
+        android:paddingBottom="100dp">
 
         <LinearLayout
+            android:id="@+id/layoutEventsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/bg_dark">
+            android:paddingHorizontal="24dp">
 
-            <!-- Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="32dp"
-                android:paddingBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="My HangOuts"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:fontFamily="@font/syne_bold"
-                    android:layout_marginBottom="20dp" />
-
-                <!-- Search Bar -->
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:background="@drawable/search_input_bg"
-                    android:layout_marginBottom="24dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="16dp">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_search"
-                            app:tint="@color/text_muted" />
-
-                        <EditText
-                            android:id="@+id/etSearch"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:paddingHorizontal="12dp"
-                            android:hint="Search HangOuts..."
-                            android:textColorHint="@color/text_muted"
-                            android:textColor="@color/text_primary"
-                            android:fontFamily="@font/dm_sans"
-                            android:textSize="14sp"
-                            android:background="@android:color/transparent"
-                            android:inputType="text"
-                            android:imeOptions="actionSearch"/>
-                    </LinearLayout>
-                </FrameLayout>
-
-                <!-- Tabs -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:cardBackgroundColor="@android:color/transparent"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="0dp"
-                    android:layout_marginBottom="16dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/tab_container_bg"
-                        android:paddingHorizontal="4dp"
-                        android:paddingVertical="4dp">
-
-                        <Button
-                            android:id="@+id/btnTabHosting"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Hosting"
-                            android:textSize="13sp"
-                            android:textColor="@color/white"
-                            android:fontFamily="@font/dm_sans"
-                            android:textStyle="bold"
-                            android:background="@drawable/tab_active_bg"
-                            android:stateListAnimator="@null"
-                            android:paddingHorizontal="16dp"
-                            android:layout_marginEnd="8dp" />
-
-                        <Button
-                            android:id="@+id/btnTabAttending"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Attending"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/dm_sans"
-                            android:background="@android:color/transparent"
-                            android:stateListAnimator="@null"
-                            android:paddingHorizontal="16dp"
-                            android:layout_marginEnd="8dp" />
-
-                        <Button
-                            android:id="@+id/btnTabFavorites"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
-                            android:text="Favorites"
-                            android:textSize="13sp"
-                            android:textColor="@color/text_muted"
-                            android:fontFamily="@font/dm_sans"
-                            android:background="@android:color/transparent"
-                            android:stateListAnimator="@null"
-                            android:paddingHorizontal="16dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <!-- Filter Dropdown -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/filterContainer"
-                    android:layout_width="240dp"
-                    android:layout_height="52dp"
-                    android:theme="@style/DarkInputTheme"
-                    android:layout_marginBottom="12dp"
-                    android:layout_marginStart="4dp"
-                    android:visibility="gone"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    app:boxStrokeColor="@color/input_stroke_selector"
-                    app:boxBackgroundColor="@color/input_bg"
-                    app:boxStrokeWidth="1dp"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/filterSpinner"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textColor="@color/text_primary"
-                        android:textColorHint="@color/text_muted"
-                        android:textSize="13sp"
-                        android:fontFamily="@font/dm_sans"
-                        android:inputType="none"
-                        android:focusable="false"
-                        android:cursorVisible="false"
-                        android:paddingHorizontal="12dp"
-                        android:gravity="center_vertical"/>
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <!-- Cards container -->
-            <LinearLayout
-                android:id="@+id/layoutEventsContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="24dp">
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="48dp"
-                    android:visibility="gone"
-                    android:indeterminateTint="@color/purple_main" />
-
-            </LinearLayout>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="48dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/purple_main" />
 
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+</LinearLayout>

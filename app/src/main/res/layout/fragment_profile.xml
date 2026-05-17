@@ -852,6 +852,44 @@
                 android:indeterminateTint="@color/purple_main"
                 android:layout_marginHorizontal="20dp" />
 
+            <!-- ── Footer ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="32dp"
+                android:paddingHorizontal="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="HangOut"
+                    android:textColor="@color/purple_main"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Version 1.0"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/dm_sans"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="© 2026 | All Rights Reserved"
+                    android:textColor="@color/text_muted"
+                    android:textSize="11sp"
+                    android:fontFamily="@font/dm_sans" />
+            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
     </LinearLayout>

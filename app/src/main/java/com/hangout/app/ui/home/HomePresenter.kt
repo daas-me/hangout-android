@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 
 class HomePresenter(
     private var view: HomeContract.View?,
@@ -18,19 +19,26 @@ class HomePresenter(
     override fun loadAll() {
         view?.showLoading(true)
         scope.launch {
-            when (val r = model.getProfile()) {
+            // Run all requests in parallel for faster loading
+            val profileAsync = async { model.getProfile() }
+            val statsAsync = async { model.getStats() }
+            val hostingAsync = async { model.getHostingEvents() }
+            val todayAsync = async { model.getTodayEvents() }
+
+            // Wait for all to complete
+            when (val r = profileAsync.await()) {
                 is Result.Success -> view?.showProfile(r.data)
                 is Result.Error   -> view?.showError(r.message)
             }
-            when (val r = model.getStats()) {
+            when (val r = statsAsync.await()) {
                 is Result.Success -> view?.showStats(r.data)
                 is Result.Error   -> { }
             }
-            when (val r = model.getHostingEvents()) {
+            when (val r = hostingAsync.await()) {
                 is Result.Success -> view?.showHostingEvents(r.data)
                 is Result.Error   -> view?.showHostingEvents(emptyList())
             }
-            when (val r = model.getTodayEvents()) {
+            when (val r = todayAsync.await()) {
                 is Result.Success -> view?.showTodayEvents(r.data)
                 is Result.Error   -> view?.showTodayEvents(emptyList())
             }

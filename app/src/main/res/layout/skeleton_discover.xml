@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clipToPadding="false"
+        android:paddingHorizontal="24dp"
+        android:paddingBottom="100dp">
+
+        <!-- Header -->
+        <View
+            android:layout_width="150dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/skeleton_bg"
+            android:tag="skeleton_item" />
+
+        <!-- Search bar skeleton -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/skeleton_bg"
+            android:tag="skeleton_item" />
+
+        <!-- Filters skeleton -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+            <View
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/skeleton_bg"
+                android:tag="skeleton_item" />
+            <View
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/skeleton_bg"
+                android:tag="skeleton_item" />
+            <View
+                android:layout_width="60dp"
+                android:layout_height="32dp"
+                android:background="@drawable/skeleton_bg"
+                android:tag="skeleton_item" />
+        </LinearLayout>
+
+        <!-- Event grid skeleton (2 columns) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Row 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+            <!-- Row 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+            <!-- Row 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/skeleton_bg"
+                    android:tag="skeleton_item" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -12,6 +12,7 @@ import com.hangout.app.databinding.FragmentHomeBinding
 import com.hangout.app.databinding.ItemEventCardHorizontalBinding
 import com.hangout.app.data.*
 import com.hangout.app.repository.NotificationRepository
+import com.hangout.app.ui.components.SkeletonLoadingHelper
 import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.ui.notifications.NotificationsFragment
 import com.hangout.app.utils.EventHolder
@@ -84,7 +85,14 @@ class HomeFragment : Fragment(), HomeContract.View {
 
     // ── HomeContract.View ──────────────────────────────────────────────────
 
-    override fun showLoading(show: Boolean) {}
+    override fun showLoading(show: Boolean) {
+        val skeletonContainer = binding.root.findViewById<View>(R.id.skeletonContainer)
+        if (show) {
+            SkeletonLoadingHelper.showSkeleton(skeletonContainer, binding.contentScroll)
+        } else {
+            SkeletonLoadingHelper.hideSkeleton(skeletonContainer, binding.contentScroll)
+        }
+    }
 
     override fun showError(message: String) {
         toast(message)
@@ -203,12 +211,12 @@ class HomeFragment : Fragment(), HomeContract.View {
     }
 
     private fun openEventDetail(event: EventItem) {
-        EventHolder.currentEvent = event  // ← add this
+        EventHolder.currentEvent = event
         val fragment = EventDetailFragment.newInstance(
-            onBack = { presenter.loadAll() }  // remove event =
+            onBack = { presenter.loadAll() }
         )
         parentFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)
+            .add(R.id.nav_host_fragment, fragment)
             .addToBackStack(null)
             .commit()
     }
