@@ -1,10 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="#F0EEFF">
+    android:viewportHeight="24">
+
+    <!-- Roof -->
     <path
-        android:fillColor="@android:color/white"
-        android:pathData="M10,20v-6h4v6h5v-8h3L12,3 2,12h3v8z"/>
+        android:pathData="M2.5,11.5 L12,3.5 L21.5,11.5"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- Walls — open at top, meets roof -->
+    <path
+        android:pathData="M4.5,11.5 L4.5,21 L19.5,21 L19.5,11.5"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="1.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- Arched door — centered, open at floor -->
+    <path
+        android:pathData="M10,21 L10,16 A2,2 0 0,1 14,16 L14,21"
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="#B57BEE"
+        android:strokeWidth="1.4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+
 </vector>

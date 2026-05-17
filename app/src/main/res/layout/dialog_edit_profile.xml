@@ -1,174 +1,661 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="24dp"
     android:background="@drawable/dialog_bg">
 
-    <!-- Header -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:gravity="center_vertical"
-        android:layout_marginBottom="24dp">
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Edit Profile"
-            android:textSize="22sp" android:textStyle="bold"
-            android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold" />
-        <ImageView android:id="@+id/btnClose"
-            android:layout_width="36dp" android:layout_height="36dp"
-            android:src="@drawable/ic_close" android:background="@drawable/btn_icon_bg"
-            android:padding="8dp" android:clickable="true" android:focusable="true"
-            app:tint="@color/text_muted" />
-    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:background="@color/card_bg">
 
-    <!-- Photo section -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:gravity="center_horizontal"
-        android:layout_marginBottom="20dp">
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
 
-        <FrameLayout android:layout_width="88dp" android:layout_height="88dp"
-            android:layout_marginBottom="12dp">
-            <ImageView android:id="@+id/ivPhotoPreview"
-                android:layout_width="88dp" android:layout_height="88dp"
-                android:scaleType="centerCrop" android:clipToOutline="true"
-                android:background="@drawable/avatar_bg" />
-            <TextView android:id="@+id/tvPhotoInitials"
-                android:layout_width="88dp" android:layout_height="88dp"
-                android:gravity="center" android:textSize="28sp"
-                android:textColor="@color/white" android:fontFamily="@font/syne_bold"
-                android:background="@drawable/avatar_gradient_bg" />
-        </FrameLayout>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Profile"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_primary"
+                android:fontFamily="@font/syne_bold" />
 
-        <!-- Pill buttons -->
-        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:gravity="center"
-            android:layout_marginBottom="8dp">
-
-            <Button android:id="@+id/btnChangePhoto"
-                android:layout_width="wrap_content" android:layout_height="34dp"
-                android:text="Change Photo"
-                android:textSize="13sp" android:textColor="@color/purple_light"
-                android:fontFamily="@font/dm_sans" android:textStyle="bold"
-                android:background="@drawable/btn_pill_purple"
-                android:stateListAnimator="@null"
-                android:layout_marginEnd="8dp"
-                android:paddingHorizontal="16dp" />
-
-            <Button android:id="@+id/btnRemovePhoto"
-                android:layout_width="wrap_content" android:layout_height="34dp"
-                android:text="Remove"
-                android:textSize="13sp" android:textColor="@color/red_accent"
-                android:fontFamily="@font/dm_sans" android:textStyle="bold"
-                android:background="@drawable/btn_pill_red"
-                android:stateListAnimator="@null"
-                android:paddingHorizontal="16dp"
-                android:visibility="gone" />
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:src="@drawable/ic_close"
+                android:background="@drawable/btn_icon_bg"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:tint="@color/text_muted" />
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="JPG or PNG · Max 2MB"
-            android:textSize="12sp" android:textColor="@color/text_muted"
-            android:fontFamily="@font/dm_sans" />
+        <!-- Photo section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="20dp">
 
-        <TextView android:id="@+id/tvPhotoError"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:textSize="12sp" android:textColor="@color/red_accent"
-            android:fontFamily="@font/dm_sans" android:visibility="gone"
-            android:layout_marginTop="4dp" />
-    </LinearLayout>
+            <!--
+                FIX: "oval" is not a valid outlineProvider enum value.
+                Valid values: background | bounds | none | paddedBounds.
+                Setting outlineProvider="background" on the FrameLayout tells Android
+                to derive the clip outline from @drawable/avatar_gradient_bg (which is
+                a circle/oval shape), giving circular clipping for all child views.
+                The individual child views no longer need outlineProvider at all.
+            -->
+            <FrameLayout
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/avatar_gradient_bg"
+                android:clipToOutline="true"
+                android:outlineProvider="background">
 
-    <View android:layout_width="match_parent" android:layout_height="1dp"
-        android:background="@color/divider" android:layout_marginBottom="20dp" />
+                <ImageView
+                    android:id="@+id/ivPhotoPreview"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:scaleType="centerCrop" />
 
-    <!-- Alert message -->
-    <TextView android:id="@+id/tvAlert"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:visibility="gone" android:padding="12dp" android:textSize="13sp"
-        android:fontFamily="@font/dm_sans" android:layout_marginBottom="16dp"
-        android:background="@drawable/error_bg" android:textColor="#f87171" />
+                <TextView
+                    android:id="@+id/tvPhotoInitials"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:gravity="center"
+                    android:textSize="28sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/syne_bold" />
 
-    <!-- First + Last name -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:layout_marginBottom="16dp">
+                <View
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:background="@drawable/avatar_border" />
+            </FrameLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:orientation="vertical"
-            android:layout_marginEnd="8dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="FIRST NAME" android:textSize="11sp" android:letterSpacing="0.1"
-                android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
-                android:layout_marginBottom="6dp" />
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilFirstName"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                style="@style/HangOutInputLayout">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFirstName"
-                    android:layout_width="match_parent" android:layout_height="52dp"
-                    android:inputType="textPersonName" android:hint="Juan"
-                    android:fontFamily="@font/dm_sans" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <!-- Pill buttons -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="8dp">
+
+                <Button
+                    android:id="@+id/btnChangePhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:text="Change"
+                    android:textSize="13sp"
+                    android:textColor="@color/purple_light"
+                    android:fontFamily="@font/dm_sans"
+                    android:textStyle="bold"
+                    android:background="@drawable/btn_pill_purple"
+                    android:stateListAnimator="@null"
+                    android:layout_marginEnd="8dp"
+                    android:paddingHorizontal="16dp"
+                    android:drawableStart="@drawable/ic_upload"
+                    android:drawablePadding="8dp" />
+
+                <Button
+                    android:id="@+id/btnRemovePhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="34dp"
+                    android:text="Remove"
+                    android:textSize="13sp"
+                    android:textColor="@color/red_accent"
+                    android:fontFamily="@font/dm_sans"
+                    android:textStyle="bold"
+                    android:background="@drawable/btn_pill_red"
+                    android:stateListAnimator="@null"
+                    android:paddingHorizontal="16dp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="JPG or PNG · Max 2MB"
+                android:textSize="12sp"
+                android:textColor="@color/text_muted"
+                android:fontFamily="@font/dm_sans" />
+
+            <TextView
+                android:id="@+id/tvPhotoError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/red_accent"
+                android:fontFamily="@font/dm_sans"
+                android:visibility="gone"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:orientation="vertical"
-            android:layout_marginStart="8dp">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="LAST NAME" android:textSize="11sp" android:letterSpacing="0.1"
-                android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
-                android:layout_marginBottom="6dp" />
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilLastName"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                style="@style/HangOutInputLayout">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etLastName"
-                    android:layout_width="match_parent" android:layout_height="52dp"
-                    android:inputType="textPersonName" android:hint="Dela Cruz"
-                    android:fontFamily="@font/dm_sans" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="20dp" />
 
-    <!-- Email (disabled) -->
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="EMAIL ADDRESS" android:textSize="11sp" android:letterSpacing="0.1"
-        android:textColor="@color/text_muted" android:fontFamily="@font/syne_bold"
-        android:layout_marginBottom="6dp" />
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilEmail"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp" style="@style/HangOutInputLayoutDisabled">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etEmail"
-            android:layout_width="match_parent" android:layout_height="52dp"
-            android:inputType="textEmailAddress" android:enabled="false"
-            android:fontFamily="@font/dm_sans" android:alpha="0.45" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:text="Email cannot be changed"
-        android:textSize="12sp" android:textColor="@color/text_muted"
-        android:fontFamily="@font/dm_sans" android:layout_marginBottom="24dp" />
-
-    <!-- Action buttons -->
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button android:id="@+id/btnSave"
-            android:layout_width="0dp" android:layout_height="52dp"
-            android:layout_weight="1" android:text="Save Changes"
-            android:textSize="15sp" android:textColor="@color/white"
+        <!-- PERSONAL INFORMATION Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PERSONAL INFORMATION"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/purple_light"
             android:fontFamily="@font/syne_bold"
-            android:background="@drawable/btn_gradient"
-            android:stateListAnimator="@null"
-            android:layout_marginEnd="10dp" />
-        <Button android:id="@+id/btnCancel"
-            android:layout_width="wrap_content" android:layout_height="52dp"
-            android:text="Cancel"
-            android:textSize="15sp" android:textColor="@color/text_muted"
+            android:layout_marginBottom="16dp" />
+
+        <!-- First + Last name -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FIRST NAME"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilFirstName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etFirstName"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="textPersonName"
+                        android:hint="Juan"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LAST NAME"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilLastName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLastName"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="textPersonName"
+                        android:hint="Dela Cruz"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Gender + Birthdate Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GENDER"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:textColor="@color/text_primary"
+                    android:background="@drawable/spinner_bg"
+                    android:padding="12dp"
+                    style="@style/HangOutSpinner"
+                    android:fontFamily="@font/dm_sans" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BIRTHDATE"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilBirthdate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etBirthdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="date"
+                        android:hint="MM/DD/YYYY"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CONTACT INFORMATION Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CONTACT INFORMATION"
+            android:textSize="12sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/purple_light"
+            android:fontFamily="@font/syne_bold"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Phone + Email Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PHONE"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="phone"
+                        android:hint="+1 (555) 123-4567"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EMAIL ADDRESS"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayoutDisabled">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="textEmailAddress"
+                        android:enabled="false"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans"
+                        android:alpha="0.45" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email cannot be changed"
+            android:textSize="12sp"
+            android:textColor="@color/text_muted"
             android:fontFamily="@font/dm_sans"
-            android:background="@drawable/btn_ghost"
-            android:stateListAnimator="@null"
-            android:paddingHorizontal="20dp" />
+            android:layout_marginBottom="24dp" />
+
+        <!-- Street/Barangay -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STREET/BARANGAY"
+            android:textSize="11sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_muted"
+            android:fontFamily="@font/syne_bold"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilStreet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            style="@style/HangOutInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etStreet"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:inputType="text"
+                android:hint="N Bacalso Ave"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:fontFamily="@font/dm_sans" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Municipality/City + State/Province in row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MUNICIPALITY/CITY"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilMunicipality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etMunicipality"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="text"
+                        android:hint="Cebu City"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="STATE/PROVINCE"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilState"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etState"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="text"
+                        android:hint="Cebu"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Country + Zip Code in row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="COUNTRY"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCountry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCountry"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="text"
+                        android:hint="Philippines"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ZIP CODE"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.1"
+                    android:textColor="@color/text_muted"
+                    android:fontFamily="@font/syne_bold"
+                    android:layout_marginBottom="6dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilZipCode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/HangOutInputLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etZipCode"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:inputType="number"
+                        android:hint="6000"
+                        android:textColor="@color/text_primary"
+                        android:textColorHint="@color/text_muted"
+                        android:fontFamily="@font/dm_sans" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Bio -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BIO"
+            android:textSize="11sp"
+            android:letterSpacing="0.1"
+            android:textColor="@color/text_muted"
+            android:fontFamily="@font/syne_bold"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            style="@style/HangOutInputLayout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etBio"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:inputType="textMultiLine"
+                android:hint="Tell us about yourself..."
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_muted"
+                android:fontFamily="@font/dm_sans"
+                android:gravity="top" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Action buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:text="Save Changes"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/syne_bold"
+                android:background="@drawable/btn_gradient"
+                android:stateListAnimator="@null"
+                android:layout_marginEnd="10dp" />
+
+            <Button
+                android:id="@+id/btnCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:text="Cancel"
+                android:textSize="15sp"
+                android:textColor="@color/text_muted"
+                android:fontFamily="@font/dm_sans"
+                android:background="@drawable/btn_ghost"
+                android:stateListAnimator="@null"
+                android:paddingHorizontal="20dp" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

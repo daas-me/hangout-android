@@ -1,18 +1,27 @@
 package com.hangout.app.ui.myhangouts
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.hangout.app.R
 import com.hangout.app.data.EventItem
 import com.hangout.app.databinding.FragmentMyHangoutsBinding
-import com.hangout.app.databinding.ItemAttendingCardBinding
+import com.hangout.app.databinding.ItemHostingCardBinding
+import com.hangout.app.utils.createStyledPopupMenu
+import com.hangout.app.databinding.ItemAttendingCardMyhangoutsBinding
+import com.hangout.app.databinding.ItemFavoritesCardBinding
 import com.hangout.app.ui.attendingdashboard.AttendingDashboardFragment
+import com.hangout.app.ui.components.createStyledAlertDialog
 import com.hangout.app.ui.eventdetail.EventDetailFragment
 import com.hangout.app.ui.hostdashboard.HostDashboardFragment
 import com.hangout.app.utils.EventHolder
@@ -28,10 +37,23 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
     private val binding get() = _binding!!
     private lateinit var presenter: MyHangoutsContract.Presenter
 
-    private var showingHosting = true
+    private enum class ActiveTab { HOSTING, ATTENDING, FAVORITES }
+    private var activeTab = ActiveTab.HOSTING
+    
+    private var hostingEvents: List<EventItem> = emptyList()
+    private var attendingEvents: List<EventItem> = emptyList()
+    private var favoriteEvents: List<EventItem> = emptyList()
+
+    // Filter states
+    private enum class HostingFilterType { PUBLISHED, DRAFT, COMPLETED }
+    private enum class AttendingFilterType { CONFIRMED, PENDING, REJECTED, CANCELLED, COMPLETED }
+    
+    private var hostingFilterType = HostingFilterType.PUBLISHED
+    private var attendingFilterType = AttendingFilterType.CONFIRMED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        @Suppress("DEPRECATION")
         retainInstance = true
         if (!::presenter.isInitialized) {
             presenter = MyHangoutsPresenter(this, MyHangoutsModel(requireContext()))
@@ -47,73 +69,251 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSearch()
         setupTabs()
-        showHostingTab()
+        setupFilters()
+
+        // ── Setup pull-to-refresh ──────────────────────────────────
+        binding.swipeRefresh.setColorSchemeResources(R.color.purple_main)
+        binding.swipeRefresh.setOnRefreshListener {
+            refreshCurrentTab()
+        }
+
+        // ── Setup scroll listener to only allow pull-to-refresh at top ──────────────
+        binding.scrollViewContent.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            binding.swipeRefresh.isEnabled = (scrollY == 0)
+        }
+
+        activateTab(ActiveTab.HOSTING)
+        
+        // Load initial data only if cache is empty
+        if (hostingEvents.isEmpty()) {
+            presenter.loadHosting()
+        }
     }
 
-    // ── Tab setup ──────────────────────────────────────────────────────────
+    private fun refreshCurrentTab() {
+        when (activeTab) {
+            ActiveTab.HOSTING   -> presenter.loadHosting()
+            ActiveTab.ATTENDING -> presenter.loadAttending()
+            ActiveTab.FAVORITES -> presenter.loadFavorites()
+        }
+    }
+
+    // ── Search ─────────────────────────────────────────────────────────────
+
+    private fun setupSearch() {
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val imm = requireContext().getSystemService(InputMethodManager::class.java)
+                imm.hideSoftInputFromWindow(binding.etSearch.windowToken, 0)
+                filterAndDisplayCurrentTab()
+                true
+            } else false
+        }
+    }
+
+    private fun filterAndDisplayCurrentTab() {
+        val query = binding.etSearch.text.toString().lowercase()
+        when (activeTab) {
+            ActiveTab.HOSTING -> {
+                val filtered = hostingEvents.filter { event ->
+                    (event.title?.lowercase()?.contains(query) == true) && when (hostingFilterType) {
+                        HostingFilterType.PUBLISHED -> event.isDraft != true && event.eventStatus != "completed"
+                        HostingFilterType.DRAFT -> event.isDraft == true
+                        HostingFilterType.COMPLETED -> event.eventStatus == "completed"
+                    }
+                }
+                clearContainer()
+                if (filtered.isEmpty()) {
+                    showEmpty("No results found.")
+                    return
+                }
+                filtered.forEach { binding.layoutEventsContainer.addView(buildHostingCard(it)) }
+            }
+            ActiveTab.ATTENDING -> {
+                val filtered = attendingEvents.filter { event ->
+                    val status = deriveAttendingStatus(event)
+                    (event.title?.lowercase()?.contains(query) == true) && when (attendingFilterType) {
+                        AttendingFilterType.CONFIRMED -> status == AttendingStatus.CONFIRMED
+                        AttendingFilterType.PENDING -> status == AttendingStatus.PENDING
+                        AttendingFilterType.REJECTED -> status == AttendingStatus.REJECTED
+                        AttendingFilterType.CANCELLED -> status == AttendingStatus.CANCELLED
+                        AttendingFilterType.COMPLETED -> status == AttendingStatus.COMPLETED
+                    }
+                }
+                clearContainer()
+                if (filtered.isEmpty()) {
+                    showEmpty("No results found.")
+                    return
+                }
+                filtered.forEach { binding.layoutEventsContainer.addView(buildAttendingCard(it)) }
+            }
+            ActiveTab.FAVORITES -> {
+                val filtered = favoriteEvents.filter { 
+                    it.title?.lowercase()?.contains(query) == true 
+                }
+                clearContainer()
+                if (filtered.isEmpty()) {
+                    showEmpty("No results found.")
+                    return
+                }
+                filtered.forEach { binding.layoutEventsContainer.addView(buildFavoriteCard(it)) }
+            }
+        }
+    }
+
+    // ── Tabs ───────────────────────────────────────────────────────────────
 
     private fun setupTabs() {
-        binding.btnTabHosting.setOnClickListener {
-            if (!showingHosting) showHostingTab()
+        binding.btnTabHosting.setOnClickListener   { activateTab(ActiveTab.HOSTING)   }
+        binding.btnTabAttending.setOnClickListener { activateTab(ActiveTab.ATTENDING) }
+        binding.btnTabFavorites.setOnClickListener { activateTab(ActiveTab.FAVORITES) }
+    }
+
+    private fun setupFilters() {
+        binding.filterSpinner.setOnItemClickListener { _, _, position, _ ->
+            when (activeTab) {
+                ActiveTab.HOSTING -> {
+                    hostingFilterType = HostingFilterType.values()[position]
+                    filterAndDisplayHosting()
+                }
+                ActiveTab.ATTENDING -> {
+                    attendingFilterType = AttendingFilterType.values()[position]
+                    filterAndDisplayAttending()
+                }
+                else -> {}
+            }
         }
-        binding.btnTabAttending.setOnClickListener {
-            if (showingHosting) showAttendingTab()
+    }
+
+    private fun updateTabCounts() {
+        val published = hostingEvents.filter { it.isDraft != true }
+        binding.btnTabHosting.text = "Hosting (${published.size})"
+        binding.btnTabAttending.text = "Attending (${attendingEvents.size})"
+        binding.btnTabFavorites.text = "♥ Favorites (${favoriteEvents.size})"
+    }
+
+    private fun activateTab(tab: ActiveTab) {
+        activeTab = tab
+        binding.etSearch.setText("")
+
+        // reset all tabs
+        listOf(binding.btnTabHosting, binding.btnTabAttending, binding.btnTabFavorites).forEach {
+            it.setBackgroundResource(android.R.color.transparent)
+            it.setTextColor(color(R.color.text_muted))
+        }
+
+        // activate selected
+        val activeBtn = when (tab) {
+            ActiveTab.HOSTING   -> binding.btnTabHosting
+            ActiveTab.ATTENDING -> binding.btnTabAttending
+            ActiveTab.FAVORITES -> binding.btnTabFavorites
+        }
+        activeBtn.setBackgroundResource(R.drawable.tab_active_bg)
+        activeBtn.setTextColor(color(R.color.white))
+        
+        // Setup filter spinner based on tab
+        when (tab) {
+            ActiveTab.HOSTING -> {
+                binding.filterContainer.show()
+                setupHostingFilter()
+                if (hostingEvents.isEmpty()) presenter.loadHosting()
+                else filterAndDisplayHosting()
+            }
+            ActiveTab.ATTENDING -> {
+                binding.filterContainer.show()
+                setupAttendingFilter()
+                if (attendingEvents.isEmpty()) presenter.loadAttending()
+                else filterAndDisplayAttending()
+            }
+            ActiveTab.FAVORITES -> {
+                binding.filterContainer.hide()
+                if (favoriteEvents.isEmpty()) presenter.loadFavorites()
+                else showFavoriteEvents(favoriteEvents)
+            }
         }
     }
 
-    private fun showHostingTab() {
-        showingHosting = true
-        binding.btnTabHosting.setBackgroundResource(R.drawable.tab_active_bg)
-        binding.btnTabHosting.setTextColor(color(R.color.white))
-        binding.btnTabAttending.setBackgroundResource(android.R.color.transparent)
-        binding.btnTabAttending.setTextColor(color(R.color.text_muted))
-        presenter.loadHosting()
+    private fun setupHostingFilter() {
+        val options = listOf("Published", "Draft", "Completed")
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item_white_text, options)
+        binding.filterSpinner.setAdapter(adapter)
+        binding.filterSpinner.setText(options[hostingFilterType.ordinal], false)
     }
 
-    private fun showAttendingTab() {
-        showingHosting = false
-        binding.btnTabAttending.setBackgroundResource(R.drawable.tab_active_bg)
-        binding.btnTabAttending.setTextColor(color(R.color.white))
-        binding.btnTabHosting.setBackgroundResource(android.R.color.transparent)
-        binding.btnTabHosting.setTextColor(color(R.color.text_muted))
-        presenter.loadAttending()
+    private fun setupAttendingFilter() {
+        val options = listOf("Confirmed", "Pending", "Rejected", "Cancelled", "Completed")
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_item_white_text, options)
+        binding.filterSpinner.setAdapter(adapter)
+        binding.filterSpinner.setText(options[attendingFilterType.ordinal], false)
     }
 
-    // ── MyHangoutsContract.View ────────────────────────────────────────────
+    // ── Contract.View ──────────────────────────────────────────────────────
 
     override fun showLoading(show: Boolean) {
         binding.progressBar.showIf(show)
+        binding.swipeRefresh.isRefreshing = show
     }
 
-    override fun showError(message: String) {
-        toast(message)
+    override fun showError(message: String) = toast(message)
+
+    override fun showHostingEvents(events: List<EventItem>) {
+        hostingEvents = events
+        updateTabCounts()
+        filterAndDisplayHosting()
     }
 
     override fun showAttendingEvents(events: List<EventItem>) {
-        binding.layoutEventsContainer.removeAllViews()
-        binding.layoutEventsContainer.addView(binding.progressBar)
-
-        if (events.isEmpty()) {
-            binding.layoutEventsContainer.addView(emptyText("You haven't RSVP'd to any HangOuts yet."))
-            return
-        }
-
-        events.forEach { event -> binding.layoutEventsContainer.addView(buildAttendingCard(event)) }
+        attendingEvents = events
+        updateTabCounts()
+        filterAndDisplayAttending()
     }
 
-    override fun showHostingEvents(events: List<EventItem>) {
-        binding.layoutEventsContainer.removeAllViews()
-
-        if (events.isEmpty()) {
-            binding.layoutEventsContainer.addView(emptyText("You haven't created any HangOuts yet."))
+    private fun filterAndDisplayHosting() {
+        clearContainer()
+        val filtered = hostingEvents.filter { event ->
+            when (hostingFilterType) {
+                HostingFilterType.PUBLISHED -> event.isDraft != true && event.eventStatus != "completed"
+                HostingFilterType.DRAFT -> event.isDraft == true
+                HostingFilterType.COMPLETED -> event.eventStatus == "completed"
+            }
+        }
+        if (filtered.isEmpty()) {
+            showEmpty("No ${hostingFilterType.name.lowercase()} HangOuts found.")
             return
         }
+        filtered.forEach { binding.layoutEventsContainer.addView(buildHostingCard(it)) }
+    }
 
-        // Show all events — drafts included
-        events.forEach { event ->
-            binding.layoutEventsContainer.addView(buildHostingCard(event))
+    private fun filterAndDisplayAttending() {
+        clearContainer()
+        val filtered = attendingEvents.filter { event ->
+            val status = deriveAttendingStatus(event)
+            when (attendingFilterType) {
+                AttendingFilterType.CONFIRMED -> status == AttendingStatus.CONFIRMED
+                AttendingFilterType.PENDING -> status == AttendingStatus.PENDING
+                AttendingFilterType.REJECTED -> status == AttendingStatus.REJECTED
+                AttendingFilterType.CANCELLED -> status == AttendingStatus.CANCELLED
+                AttendingFilterType.COMPLETED -> status == AttendingStatus.COMPLETED
+            }
         }
+        if (filtered.isEmpty()) {
+            showEmpty("No ${attendingFilterType.name.lowercase()} HangOuts found.")
+            return
+        }
+        filtered.forEach { binding.layoutEventsContainer.addView(buildAttendingCard(it)) }
+    }
+
+    override fun showFavoriteEvents(events: List<EventItem>) {
+        favoriteEvents = events
+        updateTabCounts()
+        clearContainer()
+        if (events.isEmpty()) {
+            showEmpty("No saved HangOuts yet.\nTap ♥ on any event to save it.")
+            return
+        }
+        events.forEach { binding.layoutEventsContainer.addView(buildFavoriteCard(it)) }
     }
 
     override fun onCancelSuccess(eventId: Long) {
@@ -121,106 +321,203 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
         presenter.loadAttending()
     }
 
+    override fun onUnfavoriteSuccess(eventId: Long) {
+        toast("Removed from saved.")
+        presenter.loadFavorites()
+    }
+
     // ── Card builders ──────────────────────────────────────────────────────
 
-    private fun buildAttendingCard(event: EventItem): View {
-        val card = ItemAttendingCardBinding.inflate(layoutInflater, binding.layoutEventsContainer, false)
+    private fun buildHostingCard(event: EventItem): View {
+        val card = ItemHostingCardBinding.inflate(
+            layoutInflater, binding.layoutEventsContainer, false
+        )
+        
+        card.tvEventTitle.text    = event.title ?: "Untitled"
+        card.tvDate.text          = "${event.date ?: "—"} • ${formatTimeRange(event)}"
+        card.tvLocation.text      = event.location?.ifBlank { "Virtual / TBD" } ?: "Virtual / TBD"
+        card.tvEventFormat.text   = event.format ?: "In-Person"
+        card.tvAttendees.text     = "${event.attendeeCount ?: 0}/${event.capacity ?: 0} attending"
+        card.tvPrice.text         = if ((event.price ?: 0.0) == 0.0) "Free" else "₱${event.price?.toInt()}"
 
-        card.tvEventTitle.text = event.title ?: "Untitled"
-        card.tvDate.text       = "${event.date ?: "—"} • ${event.startTime ?: event.time ?: "—"}"
-        card.tvLocation.text   = if (event.location.isNullOrBlank()) "Virtual / TBD" else event.location
-        card.tvPrice.text      = if ((event.price ?: 0.0) == 0.0) "Free" else "₱${event.price?.toInt()}"
-
-        val status = deriveAttendingStatus(event)
-        applyStatusStyle(card, event, status)
-
-        // Ticket info — show only when confirmed
-        if (status == AttendingStatus.CONFIRMED) {
-            card.layoutTicketInfo.show()
-            card.tvTicketNumber.text = event.ticketNumber ?: "TKT-${event.id}"
-            card.tvSeatNumber.text   = event.seatNumber ?: "Open"
-        } else {
-            card.layoutTicketInfo.hide()
+        // Load event image
+        if (!event.imageUrl.isNullOrBlank()) {
+            Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
         }
 
-        // Cancel button — only for active, non-cancelled, non-rejected RSVPs
-        val canCancel = status == AttendingStatus.CONFIRMED || status == AttendingStatus.PENDING
-        card.btnCancelRsvp.showIf(canCancel)
-        card.btnCancelRsvp.setOnClickListener {
-            event.id?.let { id -> confirmCancel(id) }
+        // Status badge
+        val isCompleted = event.eventStatus == "completed"
+        val isDraft = event.isDraft == true
+        card.tvStatusBadge.text = when {
+            isCompleted -> "Completed"
+            isDraft -> "Draft"
+            else -> "Published"
         }
+        card.tvStatusBadge.setBackgroundResource(
+            when {
+                isCompleted -> R.drawable.status_pill_gray
+                isDraft -> R.drawable.status_pill_yellow
+                else -> R.drawable.status_pill_green
+            }
+        )
+        card.tvStatusBadge.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.white)
+        )
 
-        card.btnViewDetails.setOnClickListener {
+        card.btnManageEvent.setOnClickListener {
             EventHolder.currentEvent = event
-            val fragment = AttendingDashboardFragment.newInstance(
-                onBack = { presenter.loadAttending() }
+            val tab = activeTab
+            val fragment = HostDashboardFragment.newInstance(
+                onBack = { if (_binding != null) activateTab(tab) }
             )
             parentFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment, fragment)
+                .add(R.id.nav_host_fragment, fragment)  // ← add not replace
                 .addToBackStack(null)
                 .commit()
+        }
+
+        card.btnEditEvent.setOnClickListener {
+            val intent = Intent(requireContext(), com.hangout.app.ui.createevent.CreateEventActivity::class.java).apply {
+                putExtra("eventId", event.id)
+                putExtra("isEdit", true)
+            }
+            startActivity(intent)
+        }
+
+        card.btnMoreOptions.setOnClickListener { anchor ->
+            showHostEventMenu(anchor, event)
         }
 
         return card.root
     }
 
-    private fun buildHostingCard(event: EventItem): View {
-        val card = ItemAttendingCardBinding.inflate(layoutInflater, binding.layoutEventsContainer, false)
-
-        card.tvEventTitle.text = event.title ?: "Untitled"
-        card.tvDate.text       = "${event.date ?: "—"} • ${event.startTime ?: event.time ?: "—"}"
-        card.tvLocation.text   = if (event.location.isNullOrBlank()) "Virtual / TBD" else event.location
-        card.tvPrice.text      = if ((event.price ?: 0.0) == 0.0) "Free" else "₱${event.price?.toInt()}"
-
-        val isDraft     = event.isDraft == true
-        val isCancelled = event.eventStatus == "cancelled"
-        val isCompleted = event.eventStatus == "completed"
-
-        card.tvStatusBadge.text = when {
-            isDraft     -> "Draft"
-            isCancelled -> "Cancelled"
-            isCompleted -> "Completed"
-            else        -> "Published"
-        }
-
-        val badgeColor = when {
-            isDraft     -> ContextCompat.getColor(requireContext(), R.color.yellow_accent)
-            isCancelled -> ContextCompat.getColor(requireContext(), R.color.red_accent)
-            isCompleted -> ContextCompat.getColor(requireContext(), R.color.text_muted)
-            else        -> ContextCompat.getColor(requireContext(), R.color.success_green)
-        }
-        card.tvStatusBadge.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-        card.tvStatusBadge.setTextColor(badgeColor)
-
-        card.viewStatusStripe.setBackgroundColor(
-            when {
-                isDraft     -> ContextCompat.getColor(requireContext(), R.color.yellow_accent)
-                isCancelled -> ContextCompat.getColor(requireContext(), R.color.red_accent)
-                isCompleted -> ContextCompat.getColor(requireContext(), R.color.text_muted)
-                else        -> ContextCompat.getColor(requireContext(), R.color.purple_main)
+    private fun showHostEventMenu(anchor: View, event: EventItem) {
+        val popup = createStyledPopupMenu(requireContext(), anchor)
+        popup.menuInflater.inflate(R.menu.host_event_menu, popup.menu)
+        
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_unpublish -> {
+                    createStyledAlertDialog(
+                        context = requireContext(),
+                        title = "Unpublish Event",
+                        message = "Are you sure you want to unpublish \"${event.title}\"? Attendees will be notified.",
+                        positiveButtonText = "Unpublish",
+                        positiveButtonListener = { _, _ ->
+                            toast("Unpublish functionality coming soon")
+                        },
+                        negativeButtonText = "Cancel",
+                        negativeButtonListener = null
+                    ).show()
+                    true
+                }
+                R.id.action_delete -> {
+                    createStyledAlertDialog(
+                        context = requireContext(),
+                        title = "Delete Event",
+                        message = "Are you sure you want to delete \"${event.title}\"? This action cannot be undone.",
+                        positiveButtonText = "Delete",
+                        positiveButtonListener = { _, _ ->
+                            toast("Delete functionality coming soon")
+                        },
+                        negativeButtonText = "Cancel",
+                        negativeButtonListener = null
+                    ).show()
+                    true
+                }
+                else -> false
             }
+        }
+        
+        popup.show()
+    }
+
+    private fun buildAttendingCard(event: EventItem): View {
+        val card = ItemAttendingCardMyhangoutsBinding.inflate(
+            layoutInflater, binding.layoutEventsContainer, false
         )
+        
+        card.tvEventTitle.text = event.title ?: "Untitled"
+        card.tvDate.text = "${event.date ?: "—"} • ${formatTimeRange(event)}"
+        card.tvLocation.text   = event.location?.ifBlank { "Virtual / TBD" } ?: "Virtual / TBD"
 
-        card.layoutTicketInfo.hide()
-        card.btnCancelRsvp.hide()
+        // Load event image
+        if (!event.imageUrl.isNullOrBlank()) {
+            Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
+        }
 
-        card.btnViewDetails.text = if (isDraft) "Edit Draft" else "Manage"
-        card.btnViewDetails.setOnClickListener {
-            if (isDraft) {
-                startActivity(
-                    android.content.Intent(requireContext(),
-                        com.hangout.app.ui.createevent.CreateEventActivity::class.java)
-                )
-            } else {
-                EventHolder.currentEvent = event
-                val fragment = HostDashboardFragment.newInstance(
-                    onBack = { presenter.loadHosting() }
-                )
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment, fragment)
-                    .addToBackStack(null)
-                    .commit()
+        val status = deriveAttendingStatus(event)
+        applyStatusStyle(card, status)
+
+        // Ticket info (confirmed only)
+        if (status == AttendingStatus.CONFIRMED) {
+            card.layoutTicketInfo.show()
+            card.tvTicketNumber.text = event.ticketNumber ?: "TKT-${event.id}"
+            card.tvSeatNumber.text   = event.seatNumber?.ifBlank { "Open" } ?: "Open"
+        } else {
+            card.layoutTicketInfo.hide()
+        }
+
+        card.btnViewETicket.setOnClickListener {
+            EventHolder.currentEvent = event
+            val tab = activeTab
+            val fragment = AttendingDashboardFragment.newInstance(
+                onBack = {
+                    if (_binding != null) {
+                        activateTab(ActiveTab.ATTENDING)
+                    }
+                }
+            )
+            parentFragmentManager.beginTransaction()
+                .add(R.id.nav_host_fragment, fragment)  // ← add not replace
+                .addToBackStack(null)
+                .commit()
+        }
+
+        card.btnDownloadTicket.setOnClickListener {
+            toast("Download ticket (not implemented)")
+        }
+
+        return card.root
+    }
+
+    private fun buildFavoriteCard(event: EventItem): View {
+        val card = ItemFavoritesCardBinding.inflate(
+            layoutInflater, binding.layoutEventsContainer, false
+        )
+        
+        card.tvEventTitle.text    = event.title ?: "Untitled"
+        card.tvDate.text = "${event.date ?: "—"} • ${formatTimeRange(event)}"
+        card.tvLocation.text      = event.location?.ifBlank { "Virtual / TBD" } ?: "Virtual / TBD"
+        card.tvEventFormat.text   = event.format ?: "In-Person"
+        card.tvAttendees.text     = "${event.attendeeCount ?: 0}/${event.capacity ?: 0} attending"
+        card.tvPrice.text         = if ((event.price ?: 0.0) == 0.0) "Free" else "₱${event.price?.toInt()}"
+
+        // Load event image
+        if (!event.imageUrl.isNullOrBlank()) {
+            Glide.with(this).load(event.imageUrl).centerCrop().into(card.ivEventImage)
+        }
+
+        card.btnViewEvent.setOnClickListener {
+            openEventDetail(event)
+        }
+
+        card.btnRemoveFavorite.setOnClickListener {
+            event.id?.let { id ->
+                createStyledAlertDialog(
+                    context = requireContext(),
+                    title = "Remove from Saved",
+                    message = "Remove \"${event.title}\" from your saved HangOuts?",
+                    positiveButtonText = "Remove",
+                    positiveButtonListener = { _, _ -> presenter.unfavorite(id) },
+                    negativeButtonText = "Keep",
+                    negativeButtonListener = null
+                ).show()
             }
+        }
+
+        card.btnRsvpNow.setOnClickListener {
+            openEventDetail(event)
         }
 
         return card.root
@@ -228,98 +525,69 @@ class MyHangoutsFragment : Fragment(), MyHangoutsContract.View {
 
     // ── Status helpers ─────────────────────────────────────────────────────
 
-    private enum class AttendingStatus {
-        CONFIRMED, PENDING, REJECTED, CANCELLED, COMPLETED
+    private enum class AttendingStatus { CONFIRMED, PENDING, REJECTED, CANCELLED, COMPLETED }
+
+    private fun deriveAttendingStatus(event: EventItem): AttendingStatus = when {
+        event.status         == "cancelled"   -> AttendingStatus.CANCELLED
+        event.attendeeStatus == "rejected"    -> AttendingStatus.REJECTED
+        event.rsvpPaymentStatus == "rejected" -> AttendingStatus.REJECTED
+        event.eventStatus    == "completed"   -> AttendingStatus.COMPLETED
+        event.rsvpPaymentStatus == "pending"  -> AttendingStatus.PENDING
+        event.status         == "confirmed"   -> AttendingStatus.CONFIRMED
+        event.rsvpPaymentStatus == "confirmed"-> AttendingStatus.CONFIRMED
+        else                                  -> AttendingStatus.CONFIRMED
     }
 
-    private fun deriveAttendingStatus(event: EventItem): AttendingStatus {
-        val rsvpStatus     = event.status
-        val paymentStatus  = event.rsvpPaymentStatus
-        val attendeeStatus = event.attendeeStatus
-        val eventStatus    = event.eventStatus
-
-        return when {
-            rsvpStatus    == "cancelled"  -> AttendingStatus.CANCELLED
-            attendeeStatus == "rejected"  -> AttendingStatus.REJECTED
-            paymentStatus  == "rejected"  -> AttendingStatus.REJECTED
-            eventStatus    == "completed" -> AttendingStatus.COMPLETED
-            paymentStatus  == "pending"   -> AttendingStatus.PENDING
-            rsvpStatus     == "confirmed" -> AttendingStatus.CONFIRMED
-            paymentStatus  == "confirmed" -> AttendingStatus.CONFIRMED
-            else                          -> AttendingStatus.CONFIRMED
-        }
-    }
-
-    private fun applyStatusStyle(
-        card: ItemAttendingCardBinding,
-        event: EventItem,
-        status: AttendingStatus
-    ) {
+    private fun applyStatusStyle(card: ItemAttendingCardMyhangoutsBinding, status: AttendingStatus) {
         val ctx = requireContext()
-        when (status) {
-            AttendingStatus.CONFIRMED -> {
-                card.tvStatusBadge.text = "Confirmed ✓"
-                card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.success_green))
-                card.viewStatusStripe.setBackgroundColor(ContextCompat.getColor(ctx, R.color.success_green))
-            }
-            AttendingStatus.PENDING -> {
-                card.tvStatusBadge.text = "Pending"
-                card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.yellow_accent))
-                card.viewStatusStripe.setBackgroundColor(ContextCompat.getColor(ctx, R.color.yellow_accent))
-            }
-            AttendingStatus.REJECTED -> {
-                card.tvStatusBadge.text = "Rejected"
-                card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.red_accent))
-                card.viewStatusStripe.setBackgroundColor(ContextCompat.getColor(ctx, R.color.red_accent))
-            }
-            AttendingStatus.CANCELLED -> {
-                card.tvStatusBadge.text = "Cancelled"
-                card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.text_muted))
-                card.viewStatusStripe.setBackgroundColor(ContextCompat.getColor(ctx, R.color.text_muted))
-            }
-            AttendingStatus.COMPLETED -> {
-                card.tvStatusBadge.text = "Completed"
-                card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.purple_light))
-                card.viewStatusStripe.setBackgroundColor(ContextCompat.getColor(ctx, R.color.purple_light))
-            }
+        val (label, bgDrawable) = when (status) {
+            AttendingStatus.CONFIRMED -> "Confirmed" to R.drawable.status_pill_green
+            AttendingStatus.PENDING   -> "Pending"   to R.drawable.status_pill_yellow
+            AttendingStatus.REJECTED  -> "Rejected"  to R.drawable.status_pill_red
+            AttendingStatus.CANCELLED -> "Cancelled" to R.drawable.status_pill_gray
+            AttendingStatus.COMPLETED -> "Completed" to R.drawable.status_pill_purple
         }
-        // Clear badge background so only the text color shows
-        card.tvStatusBadge.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-    }
-
-    // ── Actions ────────────────────────────────────────────────────────────
-
-    private fun confirmCancel(eventId: Long) {
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Cancel RSVP")
-            .setMessage("Are you sure you want to cancel your spot?")
-            .setPositiveButton("Yes, Cancel") { _, _ -> presenter.cancelRsvp(eventId) }
-            .setNegativeButton("Keep RSVP", null)
-            .show()
-    }
-
-    private fun openEventDetail(event: EventItem) {
-        EventHolder.currentEvent = event
-        val fragment = EventDetailFragment.newInstance(
-            onBack = {
-                if (showingHosting) presenter.loadHosting()
-                else presenter.loadAttending()
-            }
-        )
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment, fragment)
-            .addToBackStack(null)
-            .commit()
+        card.tvStatusBadge.text = label
+        card.tvStatusBadge.setBackgroundResource(bgDrawable)
+        card.tvStatusBadge.setTextColor(ContextCompat.getColor(ctx, R.color.white))
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────
 
-    private fun emptyText(msg: String) = TextView(requireContext()).apply {
-        text = msg
-        setTextColor(resources.getColor(R.color.text_muted, null))
-        textSize = 14f
-        gravity = Gravity.CENTER
-        setPadding(0, 64, 0, 0)
+    private fun clearContainer() {
+        binding.layoutEventsContainer.removeAllViews()
+    }
+
+    private fun showEmpty(msg: String) {
+        binding.layoutEventsContainer.addView(TextView(requireContext()).apply {
+            text = msg
+            setTextColor(resources.getColor(R.color.text_muted, null))
+            textSize = 14f
+            gravity = Gravity.CENTER
+            setPadding(0, 64, 0, 0)
+        })
+    }
+
+    private fun openEventDetail(event: EventItem) {
+        EventHolder.currentEvent = event
+        val tab = activeTab
+        val fragment = EventDetailFragment.newInstance(onBack = {
+            if (_binding != null) activateTab(tab)
+        })
+        parentFragmentManager.beginTransaction()
+            .add(R.id.nav_host_fragment, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun formatTimeRange(event: EventItem): String {
+        val start = event.startTime ?: event.time ?: return "Time TBD"
+        val end   = event.endTime
+        return if (!end.isNullOrBlank()) {
+            "${com.hangout.app.utils.formatTime12Hr(start)} – ${com.hangout.app.utils.formatTime12Hr(end)}"
+        } else {
+            com.hangout.app.utils.formatTime12Hr(start)
+        }
     }
 
     override fun onDestroyView() {

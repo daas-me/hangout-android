@@ -5,7 +5,7 @@
 
   Binding IDs used by CreateEventActivity:
     Header  : btnBack, tvStepTitle, tvStepCounter, dot1-dot4
-    Nav     : btnNext, btnSaveDraft, btnPublish, progressBar
+    Nav     : btnNext, btnPreview, btnSaveDraft, btnPublish, layoutStep4Actions, progressBar
     Step 1  : layoutStep1, layoutCoverPhoto, ivCoverPreview, tvCoverPlaceholder,
               etTitle, etDescription
     Step 2  : layoutStep2, btnFormatInPerson, btnFormatVirtual, btnFormatHybrid,
@@ -36,7 +36,7 @@
         android:paddingHorizontal="20dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <!-- Row: back + title + counter -->
+        <!-- Row: back + title + counter + unpublish button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -64,9 +64,9 @@
                     android:id="@+id/tvStepTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Basic Info"
+                    android:text="Create HangOut"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/syne_bold" />
 
@@ -79,6 +79,18 @@
                     android:textSize="12sp"
                     android:layout_marginTop="2dp" />
             </LinearLayout>
+
+            <!-- Unpublish button (only visible in edit mode) -->
+            <ImageButton
+                android:id="@+id/btnUnpublish"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/btn_icon_bg"
+                android:src="@drawable/ic_unpublish"
+                android:contentDescription="Unpublish Event"
+                app:tint="@color/red_accent"
+                android:visibility="gone"
+                android:layout_marginStart="12dp" />
         </LinearLayout>
 
         <!-- Step dot indicators -->
@@ -157,14 +169,28 @@
                     android:visibility="visible">
 
                     <!-- Cover photo picker -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cover Photo"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_upload"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="COVER PHOTO"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <FrameLayout
                         android:id="@+id/layoutCoverPhoto"
@@ -216,23 +242,42 @@
                     </FrameLayout>
 
                     <!-- Event title -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Event Title *"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_tag"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="EVENT TITLE"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:theme="@style/DarkInputTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="20dp"
+                        app:boxStrokeWidth="1dp"
                         app:boxStrokeColor="@color/input_stroke_selector"
                         app:boxBackgroundColor="@color/bg_card"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
                         app:hintTextColor="@color/text_muted">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -250,22 +295,42 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Description -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Description"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DESCRIPTION"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:theme="@style/DarkInputTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_marginBottom="24dp"
+                        app:boxStrokeWidth="1dp"
                         app:boxStrokeColor="@color/input_stroke_selector"
                         app:boxBackgroundColor="@color/bg_card"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
                         app:hintTextColor="@color/text_muted">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -293,14 +358,28 @@
                     android:visibility="gone">
 
                     <!-- Event Format -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Event Format"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="EVENT FORMAT"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -311,50 +390,84 @@
                         <Button
                             android:id="@+id/btnFormatInPerson"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
                             android:text="In-Person"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/purple_main"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
                             android:textColor="@color/white"
+                            android:backgroundTint="@color/purple_main"
                             android:layout_marginEnd="6dp"
+                            app:cornerRadius="10dp"
                             style="@style/Widget.MaterialComponents.Button" />
 
                         <Button
                             android:id="@+id/btnFormatVirtual"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
                             android:text="Virtual"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/bg_card"
+                            android:textSize="13sp"
                             android:textColor="@color/text_muted"
+                            android:backgroundTint="@color/bg_card"
                             android:layout_marginEnd="6dp"
+                            app:cornerRadius="10dp"
                             style="@style/Widget.MaterialComponents.Button" />
 
                         <Button
                             android:id="@+id/btnFormatHybrid"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="46dp"
                             android:layout_weight="1"
                             android:text="Hybrid"
-                            android:textSize="12sp"
-                            android:backgroundTint="@color/bg_card"
+                            android:textSize="13sp"
                             android:textColor="@color/text_muted"
+                            android:backgroundTint="@color/bg_card"
+                            app:cornerRadius="10dp"
                             style="@style/Widget.MaterialComponents.Button" />
                     </LinearLayout>
 
                     <!-- ── Format-specific fields (appear RIGHT below buttons) ── -->
 
                     <!-- Location (In-Person / Hybrid) -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp"
+                        android:visibility="gone"
+                        android:id="@+id/lblLocationContainer">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="LOCATION"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilLocation"
                         android:theme="@style/DarkInputTheme"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        app:boxStrokeWidth="1dp"
                         app:boxStrokeColor="@color/input_stroke_selector"
                         app:boxBackgroundColor="@color/input_bg"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
                         app:hintTextColor="@color/text_muted"
                         android:layout_marginBottom="12dp"
                         android:visibility="visible">
@@ -429,15 +542,29 @@
                     </LinearLayout>
 
                     <!-- ── Date / Time (always visible) ── -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Date *"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginTop="4dp" />
+                        android:layout_marginTop="4dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="DATE AND TIME"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilDate"
@@ -448,8 +575,13 @@
                         app:endIconMode="custom"
                         app:endIconDrawable="@drawable/ic_calendar"
                         app:endIconTint="@color/text_muted"
+                        app:boxStrokeWidth="1dp"
                         app:boxStrokeColor="@color/input_stroke_selector"
                         app:boxBackgroundColor="@color/input_bg"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
                         android:layout_marginBottom="16dp">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -486,6 +618,7 @@
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
+                                android:fontFamily="@font/syne_bold"
                                 android:layout_marginBottom="8dp" />
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -527,6 +660,7 @@
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
+                                android:fontFamily="@font/syne_bold"
                                 android:layout_marginBottom="8dp" />
 
                             <com.google.android.material.textfield.TextInputLayout
@@ -565,14 +699,28 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Max Capacity *"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_seat"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MAX CAPACITY"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:theme="@style/DarkInputTheme"
@@ -580,8 +728,13 @@
                         android:layout_height="wrap_content"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:hint="Number of slots"
+                        app:boxStrokeWidth="1dp"
                         app:boxStrokeColor="@color/input_stroke_selector"
                         app:boxBackgroundColor="@color/bg_card"
+                        app:boxCornerRadiusTopStart="12dp"
+                        app:boxCornerRadiusTopEnd="12dp"
+                        app:boxCornerRadiusBottomStart="12dp"
+                        app:boxCornerRadiusBottomEnd="12dp"
                         app:hintTextColor="@color/text_muted"
                         android:layout_marginBottom="28dp">
 
@@ -597,14 +750,28 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Seating type -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Seating Type"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_seat"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SEATING TYPE"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -615,24 +782,28 @@
                         <Button
                             android:id="@+id/btnSeatingOpen"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="50dp"
                             android:layout_weight="1"
                             android:text="Open Seating"
                             android:textSize="13sp"
-                            android:backgroundTint="@color/purple_main"
+                            android:textStyle="bold"
                             android:textColor="@color/white"
+                            android:backgroundTint="@color/purple_main"
                             android:layout_marginEnd="10dp"
+                            app:cornerRadius="11dp"
                             style="@style/Widget.MaterialComponents.Button" />
 
                         <Button
                             android:id="@+id/btnSeatingReserved"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="50dp"
                             android:layout_weight="1"
                             android:text="Reserved Seats"
                             android:textSize="13sp"
-                            android:backgroundTint="@color/bg_card"
+                            android:textStyle="bold"
                             android:textColor="@color/text_muted"
+                            android:backgroundTint="@color/bg_card"
+                            app:cornerRadius="11dp"
                             style="@style/Widget.MaterialComponents.Button" />
                     </LinearLayout>
 
@@ -672,14 +843,28 @@
                     android:visibility="gone">
 
                     <!-- Event type toggle -->
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Event Type"
-                        android:textColor="@color/text_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="10dp" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="10dp">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_tag"
+                            app:tint="@color/purple_main"
+                            android:layout_marginEnd="8dp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="EVENT TYPE"
+                            android:textColor="@color/text_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.05"
+                            android:fontFamily="@font/syne_bold" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -690,24 +875,28 @@
                         <Button
                             android:id="@+id/btnTypeFree"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="50dp"
                             android:layout_weight="1"
                             android:text="Free"
                             android:textSize="14sp"
-                            android:backgroundTint="@color/purple_main"
+                            android:textStyle="bold"
                             android:textColor="@color/white"
+                            android:backgroundTint="@color/purple_main"
                             android:layout_marginEnd="10dp"
+                            app:cornerRadius="11dp"
                             style="@style/Widget.MaterialComponents.Button" />
 
                         <Button
                             android:id="@+id/btnTypePaid"
                             android:layout_width="0dp"
-                            android:layout_height="48dp"
+                            android:layout_height="50dp"
                             android:layout_weight="1"
                             android:text="Paid"
                             android:textSize="14sp"
-                            android:backgroundTint="@color/bg_card"
+                            android:textStyle="bold"
                             android:textColor="@color/text_muted"
+                            android:backgroundTint="@color/bg_card"
+                            app:cornerRadius="11dp"
                             style="@style/Widget.MaterialComponents.Button" />
                     </LinearLayout>
 
@@ -728,8 +917,13 @@
                             android:hint="Ticket Price (₱)"
                             app:prefixText="₱ "
                             app:prefixTextColor="@color/text_muted"
+                            app:boxStrokeWidth="1dp"
                             app:boxStrokeColor="@color/input_stroke_selector"
                             app:boxBackgroundColor="@color/bg_card"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
                             app:hintTextColor="@color/text_muted"
                             android:layout_marginBottom="14dp">
 
@@ -751,8 +945,13 @@
                             android:layout_height="wrap_content"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:hint="Payment Method (e.g. GCash, Maya)"
+                            app:boxStrokeWidth="1dp"
                             app:boxStrokeColor="@color/input_stroke_selector"
                             app:boxBackgroundColor="@color/bg_card"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
                             app:hintTextColor="@color/text_muted"
                             android:layout_marginBottom="14dp">
 
@@ -774,8 +973,13 @@
                             android:layout_height="wrap_content"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:hint="Account Name"
+                            app:boxStrokeWidth="1dp"
                             app:boxStrokeColor="@color/input_stroke_selector"
                             app:boxBackgroundColor="@color/bg_card"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
                             app:hintTextColor="@color/text_muted"
                             android:layout_marginBottom="14dp">
 
@@ -797,8 +1001,13 @@
                             android:layout_height="wrap_content"
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                             android:hint="Account Number / Mobile Number"
+                            app:boxStrokeWidth="1dp"
                             app:boxStrokeColor="@color/input_stroke_selector"
                             app:boxBackgroundColor="@color/bg_card"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp"
                             app:hintTextColor="@color/text_muted"
                             android:layout_marginBottom="16dp">
 
@@ -837,7 +1046,8 @@
                                 android:text="No Refund Policy"
                                 android:textColor="@color/text_primary"
                                 android:textSize="14sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:fontFamily="@font/syne_bold" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -890,46 +1100,77 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:padding="12dp"
+                android:gravity="center"
+                android:weightSum="3">
+
+                <!-- Preview Button (all steps) -->
+                <Button
+                    android:id="@+id/btnPreview"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="54dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/bg_card"
+                    android:text="Preview"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="12dp" />
 
                 <!-- Next (steps 1-3) -->
                 <Button
                     android:id="@+id/btnNext"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:text="Continue →"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/purple_main"
+                    android:text="Continue"
+                    android:textColor="@color/white"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:backgroundTint="@color/purple_main"
-                    android:textColor="@color/white"
-                    style="@style/Widget.MaterialComponents.Button" />
+                    app:cornerRadius="12dp" />
 
-                <!-- Save Draft (step 4 only, hidden initially) -->
-                <Button
-                    android:id="@+id/btnSaveDraft"
+                <!-- Step 4 action: Save Draft or Publish -->
+                <LinearLayout
+                    android:id="@+id/layoutStep4Actions"
                     android:layout_width="0dp"
-                    android:layout_height="52dp"
+                    android:layout_height="54dp"
                     android:layout_weight="1"
-                    android:text="Save Draft"
-                    android:textSize="14sp"
-                    android:backgroundTint="@color/bg_card"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginEnd="10dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:visibility="gone"
-                    style="@style/Widget.MaterialComponents.Button" />
+                    android:layout_marginStart="10dp">
 
-                <!-- Publish (step 4 only, hidden initially) -->
-                <Button
-                    android:id="@+id/btnPublish"
-                    android:layout_width="0dp"
-                    android:layout_height="52dp"
-                    android:layout_weight="1"
-                    android:text="Publish 🎉"
-                    android:textSize="14sp"
-                    android:backgroundTint="@color/purple_main"
-                    android:textColor="@color/white"
-                    android:visibility="gone"
-                    style="@style/Widget.MaterialComponents.Button" />
+                    <Button
+                        android:id="@+id/btnSaveDraft"
+                        android:layout_width="0dp"
+                        android:layout_height="54dp"
+                        android:layout_weight="1"
+                        android:text="Save Draft"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:backgroundTint="@color/bg_card"
+                        android:layout_marginEnd="10dp"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.MaterialComponents.Button" />
+
+                    <Button
+                        android:id="@+id/btnPublish"
+                        android:layout_width="0dp"
+                        android:layout_height="54dp"
+                        android:layout_weight="1"
+                        android:text="Publish"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@color/purple_main"
+                        app:cornerRadius="12dp"
+                        style="@style/Widget.MaterialComponents.Button" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

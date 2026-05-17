@@ -17,8 +17,9 @@
     <!-- TextInputLayout — dark outlined style matching the web app inputs -->
     <style name="HangOutInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxBackgroundColor">@color/input_bg</item>
-        <item name="boxStrokeColor">@color/input_border</item>
+        <item name="boxStrokeColor">@color/input_border_state</item>  <!-- accepts ColorStateList -->
         <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
         <item name="boxCornerRadiusBottomStart">10dp</item>
@@ -59,6 +60,82 @@
         <item name="colorOnBackground">@color/text_primary</item>
         <item name="android:textColorHint">@color/text_muted</item>
         <item name="hintTextColor">@color/text_muted</item>
+    </style>
+
+    <!-- Spinner style for dark backgrounds -->
+    <style name="HangOutSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:background">@drawable/spinner_bg</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- Chat pill input — rounded, dark fill, purple focus stroke -->
+    <style name="HangOutChatInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">#1A1A2E</item>
+        <item name="boxStrokeColor">@color/input_stroke_selector</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxCornerRadiusTopStart">24dp</item>
+        <item name="boxCornerRadiusTopEnd">24dp</item>
+        <item name="boxCornerRadiusBottomStart">24dp</item>
+        <item name="boxCornerRadiusBottomEnd">24dp</item>
+        <item name="hintTextColor">@color/text_muted</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+    </style>
+
+    <!-- Custom AlertDialog theme for HangOut -->
+    <style name="HangOutAlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <!-- Dialog background -->
+        <item name="android:windowBackground">@drawable/dialog_bg</item>
+        <item name="android:colorBackground">@color/card_bg</item>
+        <item name="colorSurface">@color/card_bg</item>
+        <!-- Text colors -->
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_muted</item>
+        <!-- Button colors -->
+        <item name="buttonBarPositiveButtonStyle">@style/HangOutAlertDialogButton.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/HangOutAlertDialogButton.Negative</item>
+        <item name="buttonBarNeutralButtonStyle">@style/HangOutAlertDialogButton.Neutral</item>
+    </style>
+
+    <!-- Positive button — purple -->
+    <style name="HangOutAlertDialogButton.Positive" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/purple_light</item>
+    </style>
+
+    <!-- Negative/Neutral buttons — muted text -->
+    <style name="HangOutAlertDialogButton.Negative" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/text_muted</item>
+    </style>
+
+    <style name="HangOutAlertDialogButton.Neutral" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/text_muted</item>
+    </style>
+
+    <!-- Popup menu theme for dropdowns and popups -->
+    <style name="HangOutPopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/card_bg</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- Theme overlay for popups and dropdowns -->
+    <style name="HangOutPopupTheme" parent="ThemeOverlay.AppCompat.Dark">
+        <item name="android:popupMenuStyle">@style/HangOutPopupMenuStyle</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_muted</item>
+        <item name="android:colorBackground">@color/card_bg</item>
+        <item name="colorBackgroundFloating">@color/card_bg</item>
+    </style>
+
+    <!-- AutoCompleteTextView dropdown style -->
+    <style name="HangOutAutoCompleteStyle" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_muted</item>
+        <item name="android:background">@color/input_bg</item>
     </style>
 
 </resources>

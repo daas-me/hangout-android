@@ -1,6 +1,7 @@
 package com.hangout.app.data
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 // ── Request body sent to POST /api/events ────────────────────────────────────
 
@@ -40,6 +41,7 @@ data class CreateEventFormState(
     val title: String = "",
     val description: String = "",
     val coverImagePath: String? = null,   // local file URI for upload preview
+    val imageUrl: String? = null,         // remote image URL from server
 
     // Step 2 — Date, Time & Format
     val date: String = "",                // "YYYY-MM-DD"
@@ -60,5 +62,11 @@ data class CreateEventFormState(
     val paymentMethod: String = "",       // "GCash" | "Maya" | "Bank"
     val accountName: String = "",
     val accountNumber: String = "",
-    val noRefundPolicy: Boolean = false
-)
+    val noRefundPolicy: Boolean = false,
+
+    // Host Information (populated when editing)
+    val hostFirstName: String = "",
+    val hostLastName: String = "",
+    val hostEmail: String = "",
+    val hostPhoto: String? = null
+) : Serializable

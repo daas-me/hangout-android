@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="48dp"
+    android:background="@drawable/empty_state_bg">
+
+    <ImageView
+        android:id="@+id/ivEmptyIcon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="Empty state icon"
+        app:tint="@color/purple_main" />
+
+    <TextView
+        android:id="@+id/tvEmptyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:fontFamily="@font/syne_bold"
+        android:layout_marginBottom="8dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvEmptySubtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/text_muted"
+        android:fontFamily="@font/dm_sans"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:maxWidth="280dp" />
+
+    <Button
+        android:id="@+id/btnEmptyAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="10dp"
+        android:background="@drawable/empty_state_btn_bg"
+        android:textColor="@color/purple_light"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/dm_sans"
+        android:visibility="gone" />
+
+</LinearLayout>

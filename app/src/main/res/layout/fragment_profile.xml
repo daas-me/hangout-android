@@ -1,238 +1,858 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_dark">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@color/bg_dark">
 
-        <!-- Profile Card -->
-        <androidx.cardview.widget.CardView
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_bg"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp">
+            android:orientation="vertical"
+            android:paddingBottom="100dp">
 
+            <!-- ── Profile header card ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:background="@drawable/card_bg"
                 android:padding="24dp"
-                android:gravity="center_horizontal">
+                android:gravity="center"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginBottom="8dp">
 
-                <!-- Avatar with camera overlay -->
+                <!-- Avatar -->
                 <FrameLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_marginBottom="12dp"
+                    android:clipToOutline="true"
+                    android:background="@drawable/avatar_gradient_bg"
+                    android:outlineProvider="background"
+                    android:foreground="@drawable/avatar_border">
 
                     <ImageView
                         android:id="@+id/ivAvatar"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
                         android:scaleType="centerCrop"
-                        android:background="@drawable/avatar_bg"
-                        android:clipToOutline="true" />
+                        android:visibility="gone" />
 
-                    <!-- Initials fallback -->
                     <TextView
                         android:id="@+id/tvInitials"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:gravity="center"
-                        android:textSize="32sp"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
                         android:textColor="@color/white"
-                        android:fontFamily="@font/syne_bold"
-                        android:background="@drawable/avatar_gradient_bg" />
-
-                    <!-- Camera button -->
-                    <ImageView
-                        android:id="@+id/ivCameraOverlay"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="bottom|end"
-                        android:background="@drawable/camera_btn_bg"
-                        android:src="@drawable/ic_camera"
-                        android:padding="7dp"
-                        android:clickable="true"
-                        android:focusable="true" />
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
                 </FrameLayout>
 
                 <TextView
                     android:id="@+id/tvFullName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Name"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
                     android:textColor="@color/text_primary"
-                    android:fontFamily="@font/syne_bold"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
                     android:layout_marginBottom="4dp" />
 
                 <TextView
                     android:id="@+id/tvEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/purple_main"
-                    android:fontFamily="@font/dm_sans"
-                    android:layout_marginBottom="24dp" />
-
-                <!-- Stats row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="20dp">
-
-                    <!-- Hosting stat -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:orientation="horizontal"
-                        android:background="@drawable/stat_bg_purple"
-                        android:layout_marginBottom="8dp"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
-                        <ImageView android:layout_width="18dp" android:layout_height="18dp"
-                            android:src="@drawable/ic_calendar" android:layout_marginEnd="10dp"
-                            app:tint="@color/purple_main" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Events Hosting"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
-                            android:fontFamily="@font/dm_sans" />
-                        <TextView android:id="@+id/tvHostingCount"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="0" android:textSize="18sp" android:textStyle="bold"
-                            android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold" />
-                    </LinearLayout>
-
-                    <!-- Attending stat -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:orientation="horizontal"
-                        android:background="@drawable/stat_bg_purple"
-                        android:layout_marginBottom="8dp"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
-                        <ImageView android:layout_width="18dp" android:layout_height="18dp"
-                            android:src="@drawable/ic_users" android:layout_marginEnd="10dp"
-                            app:tint="@color/purple_main" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Events Attending"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
-                            android:fontFamily="@font/dm_sans" />
-                        <TextView android:id="@+id/tvAttendingCount"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="0" android:textSize="18sp" android:textStyle="bold"
-                            android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold" />
-                    </LinearLayout>
-
-                    <!-- Attendees stat -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:orientation="horizontal"
-                        android:background="@drawable/stat_bg_pink"
-                        android:padding="12dp"
-                        android:gravity="center_vertical">
-                        <ImageView android:layout_width="18dp" android:layout_height="18dp"
-                            android:src="@drawable/ic_trending" android:layout_marginEnd="10dp"
-                            app:tint="@color/pink_accent" />
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Total Attendees"
-                            android:textSize="14sp" android:textColor="@color/text_primary"
-                            android:fontFamily="@font/dm_sans" />
-                        <TextView android:id="@+id/tvAttendeesCount"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="0" android:textSize="18sp" android:textStyle="bold"
-                            android:textColor="@color/text_primary" android:fontFamily="@font/syne_bold" />
-                    </LinearLayout>
-                </LinearLayout>
+                    android:textColor="@color/text_muted"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="12dp" />
 
                 <!-- Edit Profile button -->
                 <Button
                     android:id="@+id/btnEditProfile"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
                     android:text="Edit Profile"
-                    android:textSize="15sp"
-                    android:textColor="@color/text_primary"
-                    android:fontFamily="@font/dm_sans"
-                    android:background="@drawable/btn_ghost"
-                    android:stateListAnimator="@null" />
-
+                    android:textSize="12sp"
+                    android:backgroundTint="#22A855F7"
+                    android:textColor="@color/purple_light"
+                    style="@style/Widget.MaterialComponents.Button" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- Account Settings Card -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@color/card_bg"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp">
-
+            <!-- ── Hosting Eligibility ── -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:background="@drawable/card_bg"
+                android:padding="16dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Hosting Eligibility"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/syne_bold" />
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_check_circle"
+                        app:tint="@color/green_accent"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/progressHostingEligibility"
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:progress="100"
+                    android:progressTint="@color/green_accent"
+                    android:progressBackgroundTint="#22A855F7"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvHostingEligibilityStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Complete - Unlocked"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/dm_sans" />
+            </LinearLayout>
+
+            <!-- ── Stats row ── -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp"
+                app:cardBackgroundColor="@color/card_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="20dp"
+                    android:baselineAligned="false">
+
+                    <!-- Hosting -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_calendar"
+                            android:padding="12dp"
+                            android:background="@drawable/stat_icon_purple_gradient"
+                            android:layout_marginBottom="8dp"
+                            app:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tvHostingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/syne_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hosting"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+
+                    <!-- Attending -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_users"
+                            android:padding="12dp"
+                            android:background="@drawable/stat_icon_purple_gradient"
+                            android:layout_marginBottom="8dp"
+                            app:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tvAttendingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/syne_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Attending"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+
+                    <!-- Total Attendees -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_trending"
+                            android:padding="12dp"
+                            android:background="@drawable/stat_icon_purple_gradient"
+                            android:layout_marginBottom="8dp"
+                            app:tint="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tvAttendeesCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/text_primary"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/syne_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Attendees"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- ── Personal Information Section ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp">
+
+                <!-- Header with Edit button -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Personal Information"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/syne_bold" />
+
+                    <Button
+                        android:id="@+id/btnEditPersonalInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="Edit"
+                        android:textSize="12sp"
+                        android:backgroundTint="#22A855F7"
+                        android:textColor="@color/purple_light"
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:paddingHorizontal="12dp" />
+                </LinearLayout>
+
+                <!-- Full Name Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Full Name"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_user"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvFullNameInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Email Address Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Email Address"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_mail"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvEmailInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Phone Number Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Phone Number"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvPhoneInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Gender Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gender"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_user"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvGenderInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Birthdate Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Birthdate"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvBirthdateInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Bio Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bio"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvBioInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Not provided"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:maxLines="3"
+                        android:ellipsize="end" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- ── Address Section ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Account Settings"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
+                    android:text="Address"
                     android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
                     android:fontFamily="@font/syne_bold"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="16dp" />
 
-                <!-- Personal Information row -->
-                <include layout="@layout/item_settings_row"
-                    android:id="@+id/rowPersonalInfo"
+                <!-- Street Row -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginVertical="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Street/Barangay"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
 
-                <!-- Change Password row -->
-                <include layout="@layout/item_settings_row"
-                    android:id="@+id/rowChangePassword"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvStreetInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Municipality Row -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
 
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginVertical="4dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Municipality/City"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
 
-                <!-- Sign Out row -->
-                <include layout="@layout/item_settings_row_danger"
-                    android:id="@+id/rowSignOut"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvMunicipalityInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- State Row -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="State/Province"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvStateInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Country Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Country"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvCountryInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Zip Code Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zip Code"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:fontFamily="@font/dm_sans"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_location"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="8dp" />
+
+                        <TextView
+                            android:id="@+id/tvZipcodeInfo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Not provided"
+                            android:textColor="@color/text_primary"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/dm_sans" />
+                    </LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- Loading overlay -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            android:indeterminateTint="@color/purple_main" />
+            <!-- ── Settings Section Label ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ACCOUNT SETTINGS"
+                android:textColor="@color/text_muted"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Personal Information Settings Row -->
+            <include
+                android:id="@+id/rowPersonalInfo"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Privacy & Security -->
+            <include
+                android:id="@+id/rowChangePassword"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Notification Preferences -->
+            <include
+                android:id="@+id/rowNotifications"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Hosting Eligibility -->
+            <include
+                android:id="@+id/rowHostingEligibility"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp" />
+
+            <!-- ── Danger Zone ── -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DANGER ZONE"
+                android:textColor="@color/red_accent"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.1"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Delete Account -->
+            <include
+                android:id="@+id/rowDeleteAccount"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Sign Out -->
+            <include
+                android:id="@+id/rowSignOut"
+                layout="@layout/item_settings_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Progress bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/purple_main"
+                android:layout_marginHorizontal="20dp" />
+
+        </LinearLayout>
+    </ScrollView>
     </LinearLayout>
-</ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

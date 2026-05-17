@@ -1,8 +1,11 @@
 package com.hangout.app.ui.ticket
 
+import android.content.ContentValues
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.view.*
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -23,6 +26,7 @@ class DigitalTicketFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var event: EventItem? = null
+    private var qrContent: String = ""
     var onBackCallback: (() -> Unit)? = null
 
     companion object {
@@ -46,12 +50,22 @@ class DigitalTicketFragment : Fragment() {
             return
         }
 
-        binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
-            onBackCallback?.invoke()
-        }
+        binding.btnBack.setOnClickListener { navigateBack() }
+        binding.btnClose.setOnClickListener { navigateBack() }
+        binding.btnDownloadQr.setOnClickListener { downloadQrCode() }
 
         event?.let { bindTicket(it) }
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────
+
+    private fun navigateBack() {
+        onBackCallback?.let { callback ->
+            parentFragmentManager.popBackStack()
+            binding.root.post { callback() }
+        } ?: run {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     // ── Bind all ticket data ──────────────────────────────────────────────
@@ -70,71 +84,107 @@ class DigitalTicketFragment : Fragment() {
             binding.ivCoverImage.hide()
         }
 
+        // Header
+        binding.tvEventTitle.text = e.title ?: "Untitled"
+        val fmt = e.format
+        if (fmt.isNullOrBlank()) {
+            binding.tvEventFormat.hide()
+        } else {
+            binding.tvEventFormat.text = fmt
+            binding.tvEventFormat.show()
+        }
+
+        // Guest
+        binding.tvAttendeeName.text =
+            "${e.hostFirstName ?: ""} ${e.hostLastName ?: ""}".trim().ifBlank { "Attendee" }
+
         // Event info
-        binding.tvEventTitle.text    = e.title ?: "Untitled"
         binding.tvEventDate.text     = formatDate(e)
         binding.tvEventTime.text     = formatTime(e)
         binding.tvEventLocation.text = e.location?.ifBlank { "Virtual / TBD" } ?: "Virtual / TBD"
-        binding.tvEventFormat.text   = e.format ?: "In-Person"
 
-        // Ticket details
+        // Ticket chips
         val ticketNumber = e.ticketNumber ?: "TKT-${e.id}"
-        binding.tvTicketNumber.text  = ticketNumber
-        binding.tvSeatNumber.text    = e.seatNumber?.ifBlank { "Open Seating" } ?: "Open Seating"
-        binding.tvAttendeeName.text  = "${e.hostFirstName ?: ""} ${e.hostLastName ?: ""}".trim()
-            .ifBlank { "Attendee" }
+        binding.tvTicketNumber.text = ticketNumber
+        binding.tvSeatNumber.text   = e.seatNumber?.ifBlank { "Open" } ?: "Open"
 
-        // Check-in status
-        val isAttended = e.attendeeStatus == "attended"
-        if (isAttended) {
-            binding.tvCheckinStatus.text = "✓ Checked In"
-            binding.tvCheckinStatus.setTextColor(
-                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.success_green)
-            )
-            binding.viewCheckinBg.setBackgroundColor(
-                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.success_green)
-            )
-        } else {
-            binding.tvCheckinStatus.text = "Not Yet Checked In"
-            binding.tvCheckinStatus.setTextColor(
-                androidx.core.content.ContextCompat.getColor(requireContext(), R.color.text_muted)
-            )
-        }
+        // QR
+        val frontendBase = "https://hangout-web.onrender.com"
+        qrContent = "$frontendBase/verify/${e.id}/${e.ticketToken ?: ticketNumber}"
 
-        // QR Code — generate from ticket token or ticket number
-        val qrContent = e.ticketToken ?: ticketNumber
         generateQrCode(qrContent)?.let { bitmap ->
             binding.ivQrCode.setImageBitmap(bitmap)
+            binding.ivQrCode.show()
+            binding.tvQrFallback.hide()
         } ?: run {
             binding.tvQrFallback.show()
             binding.ivQrCode.hide()
         }
 
-        // QR label under the code
-        binding.tvQrLabel.text = "Scan this code at the event entrance"
+        binding.tvQrLabel.text     = "Scan at the entrance to verify attendance"
+        binding.tvQrTicketRef.text = ticketNumber
+
+        // Check-in status
+        val isAttended = e.attendeeStatus == "attended"
+        if (isAttended) {
+            binding.tvCheckinStatus.text = "Checked In"
+            val green = androidx.core.content.ContextCompat
+                .getColor(requireContext(), R.color.success_green)
+            binding.tvCheckinStatus.setTextColor(green)
+            binding.viewCheckinBg.setBackgroundColor(green)
+        } else {
+            binding.tvCheckinStatus.text = "Not Yet Checked In"
+            val muted = androidx.core.content.ContextCompat
+                .getColor(requireContext(), R.color.text_muted)
+            binding.tvCheckinStatus.setTextColor(muted)
+            binding.viewCheckinBg.setBackgroundColor(muted)
+        }
     }
 
-    // ── QR code generation ────────────────────────────────────────────────
+    // ── Download QR to gallery ────────────────────────────────────────────
+
+    private fun downloadQrCode() {
+        if (qrContent.isBlank()) { toast("QR not available"); return }
+        val bitmap = generateQrCode(qrContent) ?: run { toast("Failed to generate QR"); return }
+        try {
+            val name = "QR_${event?.ticketNumber ?: "ticket"}.png"
+            val values = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, name)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                put(MediaStore.Images.Media.RELATIVE_PATH,
+                    "${Environment.DIRECTORY_PICTURES}/HangOut")
+            }
+            val uri = requireContext().contentResolver
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            if (uri != null) {
+                requireContext().contentResolver.openOutputStream(uri)?.use { out ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                }
+                toast("QR code saved to gallery")
+            } else {
+                toast("Failed to save QR code")
+            }
+        } catch (ex: Exception) {
+            toast("Error: ${ex.message}")
+        }
+    }
+
+    // ── QR code generation (black on white to match web) ──────────────────
 
     private fun generateQrCode(content: String): Bitmap? {
         return try {
             val hints = mapOf(
-                EncodeHintType.MARGIN          to 1,
+                EncodeHintType.MARGIN          to 2,
                 EncodeHintType.ERROR_CORRECTION to com.google.zxing.qrcode.decoder.ErrorCorrectionLevel.H
             )
-            val writer = QRCodeWriter()
+            val writer    = QRCodeWriter()
             val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512, hints)
-            val width  = bitMatrix.width
-            val height = bitMatrix.height
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    // Dark modules = purple, light modules = dark background
-                    bitmap.setPixel(
-                        x, y,
-                        if (bitMatrix[x, y]) 0xFFC084FC.toInt()   // purple_light
-                        else                  0xFF13131F.toInt()   // bg_dark
-                    )
+            val w = bitMatrix.width
+            val h = bitMatrix.height
+            val bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.RGB_565)
+            for (x in 0 until w) {
+                for (y in 0 until h) {
+                    bitmap.setPixel(x, y, if (bitMatrix[x, y]) Color.BLACK else Color.WHITE)
                 }
             }
             bitmap
@@ -151,25 +201,10 @@ class DigitalTicketFragment : Fragment() {
         val start = e.startTime ?: e.time ?: return "Time TBD"
         val end   = e.endTime
         return if (!end.isNullOrBlank()) {
-            "${to12Hr(start)} – ${to12Hr(end)}"
+            "${com.hangout.app.utils.formatTime12Hr(start)} – ${com.hangout.app.utils.formatTime12Hr(end)}"
         } else {
-            to12Hr(start)
+            com.hangout.app.utils.formatTime12Hr(start)
         }
-    }
-
-    private fun to12Hr(time24: String): String {
-        return try {
-            val parts = time24.split(":")
-            val h = parts[0].toInt()
-            val m = parts[1].toInt()
-            val ampm    = if (h >= 12) "PM" else "AM"
-            val display = when {
-                h == 0  -> 12
-                h > 12  -> h - 12
-                else    -> h
-            }
-            String.format("%d:%02d %s", display, m, ampm)
-        } catch (_: Exception) { time24 }
     }
 
     override fun onDestroyView() {

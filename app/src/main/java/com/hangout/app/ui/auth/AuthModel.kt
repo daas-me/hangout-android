@@ -14,8 +14,8 @@ class AuthModel(context: Context) {
 
     fun isLoggedIn(): Boolean = session.isLoggedIn()
 
-    fun saveSession(token: String, email: String, firstname: String) {
-        session.saveSession(token, email, firstname)
+    fun saveSession(token: String, email: String, firstname: String, userId: Long? = null) {
+        session.saveSession(token, email, firstname, userId)
     }
 
     suspend fun login(email: String, password: String): Result<LoginResponse> {

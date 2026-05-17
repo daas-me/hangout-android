@@ -9,6 +9,7 @@
     <!-- ── Backgrounds ─────────────────────────────────────────────────── -->
     <!-- Dark base: matches the web app's deep navy-purple -->
     <color name="bg_dark">#0F0E1A</color>
+    <color name="dark_bg">#0F0E1A</color>
     <!-- Card surface: slightly lighter than bg_dark -->
     <color name="bg_card">#1E2040</color>
 
@@ -19,6 +20,7 @@
 
     <!-- ── Accents ───────────────────────────────────────────────────────── -->
     <color name="success_green">#22C55E</color>
+    <color name="green_accent">#22C55E</color>
     <color name="yellow_accent">#EAB308</color>
     <color name="red_accent">#EF4444</color>
 
@@ -34,12 +36,19 @@
     <color name="black">#FF000000</color>
     <color name="nav_selected">#A855F7</color>
 
-    <color name="input_bg">#1A1A2E</color>
+    <color name="input_bg">#0F0E1A</color>
     <color name="input_border">#2AFFFFFF</color>
+    <color name="input_stroke">#3A3A5C</color>
     <color name="card_bg">#1E2040</color>
+    <color name="card_dark_bg">#151627</color>
 
     <color name="text_secondary">#9CA3AF</color>
     <color name="pink_accent">#EC4899</color>
 
+    <!-- ── Empty State ─────────────────────────────────────────────────── -->
+    <color name="empty_state_bg">#06FFFFFF</color>
+    <color name="empty_state_border">#14FFFFFF</color>
+    <color name="empty_state_btn_bg">#1F7C3AED</color>
+    <color name="empty_state_btn_border">#4F7C3AED</color>
 
 </resources>

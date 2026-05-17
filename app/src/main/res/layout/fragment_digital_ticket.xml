@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@color/bg_dark">
 
-    <!-- Header -->
+    <!-- App bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,28 +38,30 @@
             android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- Scrollable content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:fillViewport="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingHorizontal="20dp"
-            android:paddingBottom="40dp">
+            android:paddingBottom="24dp">
 
-            <!-- Ticket card -->
+            <!-- TICKET CARD -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/card_bg"
                 android:layout_marginTop="8dp"
-                android:clipToPadding="true">
+                android:clipChildren="true">
 
-                <!-- Cover image -->
+                <!-- Cover image (shown when event has one) -->
                 <ImageView
                     android:id="@+id/ivCoverImage"
                     android:layout_width="match_parent"
@@ -67,166 +69,81 @@
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
 
-                <!-- Gradient header if no image -->
+                <!-- Purple gradient header -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="@drawable/hero_gradient_overlay"
+                    android:background="@drawable/ticket_header_gradient"
                     android:padding="20dp">
 
-                    <!-- HangOut branding -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="HangOut"
-                        android:textColor="@color/purple_light"
-                        android:textSize="12sp"
+                        android:text="E-TICKET  ·  HANGOUT"
+                        android:textColor="#CCffffff"
+                        android:textSize="11sp"
                         android:textStyle="bold"
-                        android:letterSpacing="0.15"
-                        android:layout_marginBottom="8dp" />
+                        android:letterSpacing="0.12"
+                        android:layout_marginBottom="6dp" />
 
                     <TextView
                         android:id="@+id/tvEventTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/text_primary"
-                        android:textSize="20sp"
+                        android:textSize="22sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="4dp" />
+                        android:lineSpacingMultiplier="1.1"
+                        android:layout_marginBottom="10dp" />
 
                     <TextView
                         android:id="@+id/tvEventFormat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/purple_light"
+                        android:textColor="#FFffffff"
                         android:textSize="11sp"
-                        android:background="#33A855F7"
+                        android:background="@drawable/format_chip_bg"
                         android:paddingHorizontal="10dp"
-                        android:paddingVertical="3dp" />
+                        android:paddingVertical="4dp" />
+
                 </LinearLayout>
 
-                <!-- Ticket tear line -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/divider"
-                    android:layout_marginVertical="0dp" />
-
-                <!-- Event details grid -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <!-- Left column -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_marginEnd="12dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="DATE"
-                            android:textColor="@color/text_muted"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.1"
-                            android:layout_marginBottom="3dp" />
-
-                        <TextView
-                            android:id="@+id/tvEventDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="14dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="LOCATION"
-                            android:textColor="@color/text_muted"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.1"
-                            android:layout_marginBottom="3dp" />
-
-                        <TextView
-                            android:id="@+id/tvEventLocation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <!-- Right column -->
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="TIME"
-                            android:textColor="@color/text_muted"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.1"
-                            android:layout_marginBottom="3dp" />
-
-                        <TextView
-                            android:id="@+id/tvEventTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/text_primary"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:layout_marginBottom="14dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SEAT"
-                            android:textColor="@color/text_muted"
-                            android:textSize="10sp"
-                            android:letterSpacing="0.1"
-                            android:layout_marginBottom="3dp" />
-
-                        <TextView
-                            android:id="@+id/tvSeatNumber"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/purple_light"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Ticket number row -->
+                <!-- Guest row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp"
-                    android:paddingBottom="12dp">
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp">
+
+                    <FrameLayout
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/user_avatar_bg">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_person"
+                            app:tint="@color/purple_light" />
+
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ATTENDEE"
+                            android:text="GUEST"
                             android:textColor="@color/text_muted"
                             android:textSize="10sp"
                             android:letterSpacing="0.1"
@@ -237,15 +154,178 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/text_primary"
-                            android:textSize="13sp"
+                            android:textSize="16sp"
                             android:textStyle="bold" />
+
                     </LinearLayout>
 
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- DATE / TIME / LOCATION rows -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- DATE -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_calendar"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="14dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="DATE"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:letterSpacing="0.1"
+                                android:layout_marginBottom="2dp" />
+
+                            <TextView
+                                android:id="@+id/tvEventDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- TIME -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_clock"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="14dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TIME"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:letterSpacing="0.1"
+                                android:layout_marginBottom="2dp" />
+
+                            <TextView
+                                android:id="@+id/tvEventTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- LOCATION -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_location_pin"
+                            app:tint="@color/purple_light"
+                            android:layout_marginEnd="14dp" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LOCATION"
+                                android:textColor="@color/text_muted"
+                                android:textSize="10sp"
+                                android:letterSpacing="0.1"
+                                android:layout_marginBottom="2dp" />
+
+                            <TextView
+                                android:id="@+id/tvEventLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/text_primary"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <!-- TICKET NO. and SEAT chip cards -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <!-- Ticket No. card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="vertical"
-                        android:gravity="end">
+                        android:background="@drawable/ticket_chip_bg"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_ticket_stub"
+                            app:tint="@color/purple_light" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -254,7 +334,7 @@
                             android:textColor="@color/text_muted"
                             android:textSize="10sp"
                             android:letterSpacing="0.1"
-                            android:gravity="end"
+                            android:layout_marginTop="10dp"
                             android:layout_marginBottom="3dp" />
 
                         <TextView
@@ -262,51 +342,90 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/text_primary"
-                            android:textSize="13sp"
-                            android:textStyle="bold"
-                            android:gravity="end" />
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
                     </LinearLayout>
+
+                    <!-- Seat card -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@drawable/seat_chip_bg"
+                        android:padding="14dp"
+                        android:layout_marginStart="12dp">
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@drawable/ic_ticket_seat"
+                            app:tint="@color/purple_light" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SEAT"
+                            android:textColor="@color/text_muted"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.1"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="3dp" />
+
+                        <TextView
+                            android:id="@+id/tvSeatNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/purple_light"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <!-- Perforated tear line -->
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="8dp">
+                    android:layout_height="24dp">
 
-                    <!-- Left semi-circle notch -->
                     <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@color/bg_dark"
-                        android:backgroundTint="@null" />
-
-                    <!-- Dashed line -->
-                    <View
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_weight="1"
-                        android:background="@color/divider" />
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/divider_dashed"
+                        android:layerType="software" />
 
-                    <!-- Right semi-circle notch -->
                     <View
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@color/bg_dark"
-                        android:backgroundTint="@null" />
-                </LinearLayout>
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="-12dp"
+                        android:background="@drawable/notch_circle" />
 
-                <!-- QR Code section -->
+                    <View
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="-12dp"
+                        android:background="@drawable/notch_circle" />
+
+                </RelativeLayout>
+
+                <!-- QR section -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="24dp">
+                    android:paddingHorizontal="24dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="28dp">
 
-                    <!-- Check-in status badge -->
+                    <!-- Check-in status -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -318,8 +437,8 @@
                             android:id="@+id/viewCheckinBg"
                             android:layout_width="8dp"
                             android:layout_height="8dp"
-                            android:background="@color/text_muted"
-                            android:layout_marginEnd="6dp" />
+                            android:background="@drawable/status_dot"
+                            android:layout_marginEnd="8dp" />
 
                         <TextView
                             android:id="@+id/tvCheckinStatus"
@@ -327,17 +446,26 @@
                             android:layout_height="wrap_content"
                             android:textSize="12sp"
                             android:textStyle="bold" />
+
                     </LinearLayout>
 
-                    <!-- QR code image -->
-                    <ImageView
-                        android:id="@+id/ivQrCode"
-                        android:layout_width="220dp"
-                        android:layout_height="220dp"
-                        android:scaleType="fitCenter"
-                        android:layout_marginBottom="16dp" />
+                    <!-- White QR container -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/qr_container_bg"
+                        android:padding="12dp"
+                        android:layout_marginBottom="16dp">
 
-                    <!-- Fallback text if QR fails -->
+                        <ImageView
+                            android:id="@+id/ivQrCode"
+                            android:layout_width="200dp"
+                            android:layout_height="200dp"
+                            android:scaleType="fitCenter" />
+
+                    </LinearLayout>
+
+                    <!-- QR fallback -->
                     <TextView
                         android:id="@+id/tvQrFallback"
                         android:layout_width="wrap_content"
@@ -348,45 +476,115 @@
                         android:visibility="gone"
                         android:layout_marginBottom="16dp" />
 
+                    <!-- Scan label -->
                     <TextView
                         android:id="@+id/tvQrLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/text_muted"
                         android:textSize="12sp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:layout_marginBottom="4dp" />
+
+                    <!-- Ticket number ref under QR -->
+                    <TextView
+                        android:id="@+id/tvQrTicketRef"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/text_muted"
+                        android:textSize="11sp"
+                        android:gravity="center"
+                        android:alpha="0.55" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Info note -->
-            <LinearLayout
-                android:layout_width="match_parent"
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Fixed bottom buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/bg_dark">
+
+        <TextView
+            android:id="@+id/btnClose"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="Close"
+            android:textColor="@color/text_primary"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:background="@drawable/btn_close_bg"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Download QR button (LinearLayout so we can put icon + text together cleanly) -->
+        <LinearLayout
+            android:id="@+id/btnDownloadQr"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="2"
+            android:layout_marginStart="12dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/btn_purple_solid"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="17dp"
+                android:layout_height="17dp"
+                android:src="@drawable/ic_download"
+                app:tint="@color/text_primary"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/card_info_bg"
-                android:padding="14dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/ic_info"
-                    app:tint="@color/purple_light"
-                    android:layout_marginEnd="10dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Present this QR code at the event entrance. Screenshot this ticket for offline access."
-                    android:textColor="@color/text_muted"
-                    android:textSize="12sp"
-                    android:lineSpacingExtra="2dp" />
-            </LinearLayout>
+                android:text="Download QR"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
-    </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Tip banner -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/card_info_bg"
+        android:padding="14dp"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_camera"
+            app:tint="@color/purple_light"
+            android:layout_marginEnd="10dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Tip: Take a screenshot to save the full ticket, or download just the QR code to show at the entrance."
+            android:textColor="@color/text_muted"
+            android:textSize="12sp"
+            android:lineSpacingExtra="2dp" />
+
+    </LinearLayout>
+
 </LinearLayout>

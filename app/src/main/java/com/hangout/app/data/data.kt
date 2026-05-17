@@ -12,6 +12,7 @@ data class LoginRequest(
 data class LoginResponse(
     val message: String,
     val token: String,
+    val id: Long?,
     val email: String,
     val firstname: String
 )
@@ -33,7 +34,17 @@ data class UserProfile(
     val email: String,
     val age: Any?,              // Int or empty string from backend
     val birthdate: String?,
-    val role: String
+    val role: String,
+    val phone: String? = null,
+    val city: String? = null,
+    val bio: String? = null,
+    val gender: String? = null,
+    val street: String? = null,
+    val state: String? = null,
+    val country: String? = null,
+    val zipcode: String? = null,
+    val profileComplete: Boolean = false,
+    val completionPercent: Int = 0
 )
 
 data class UpdateProfileRequest(

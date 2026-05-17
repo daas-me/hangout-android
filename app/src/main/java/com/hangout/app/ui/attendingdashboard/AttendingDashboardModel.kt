@@ -1,6 +1,7 @@
 package com.hangout.app.ui.attendingdashboard
 
 import android.content.Context
+import com.hangout.app.data.EventItem
 import com.hangout.app.data.MessageResponse
 import com.hangout.app.network.RetrofitClient
 import com.hangout.app.repository.EventRepository
@@ -26,9 +27,17 @@ class AttendingDashboardModel(context: Context) {
         }
     }
 
-    suspend fun acknowledgeRefund(eventId: Long): Result<MessageResponse> {
+    suspend fun acknowledgeRefund(
+        eventId: Long,
+        choice: String,
+        reason: String?
+    ): Result<MessageResponse> {
         return try {
-            val response = api.acknowledgeRefund(eventId)
+            val body = mutableMapOf<String, String?>("acknowledgement" to choice)
+            if (choice == "rejected" && !reason.isNullOrBlank()) {
+                body["rejectionReason"] = reason
+            }
+            val response = api.acknowledgeRefund(eventId, body)
             if (response.isSuccessful)
                 Result.Success(response.body() ?: MessageResponse("Acknowledged"))
             else
@@ -37,6 +46,18 @@ class AttendingDashboardModel(context: Context) {
             Result.Error("Cannot connect to server.")
         }
     }
+    suspend fun fetchEvent(eventId: Long): Result<EventItem> {
+        return try {
+            val response = api.getEventById(eventId)
+            if (response.isSuccessful && response.body() != null)
+                Result.Success(response.body()!!)
+            else
+                Result.Error(parseError(response.errorBody()?.string()))
+        } catch (e: Exception) {
+            Result.Error("Cannot connect to server.")
+        }
+    }
+
 
     private fun parseError(body: String?): String {
         if (body == null) return "Server error"

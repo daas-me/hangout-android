@@ -12,32 +12,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        >
 
+        <!-- Image Section - Top Portion -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp">
+            android:layout_height="160dp">
 
             <ImageView
                 android:id="@+id/ivEventImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:background="#2D2A4A" />
+                android:background="@drawable/event_image_gradient" />
         </FrameLayout>
 
+        <!-- Content Section - Below Image -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Title -->
             <TextView
                 android:id="@+id/tvEventTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Event Title"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
                 android:fontFamily="@font/syne_bold"
@@ -45,6 +49,7 @@
                 android:ellipsize="end"
                 android:layout_marginBottom="12dp" />
 
+            <!-- Date/Time Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,10 +70,38 @@
                     android:layout_height="wrap_content"
                     android:text="Mar 21, 2026 • 15:00"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/text_primary"
                     android:fontFamily="@font/dm_sans" />
             </LinearLayout>
 
+            <!-- Location Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_location"
+                    app:tint="@color/purple_main"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvEventLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Location Name"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="@font/dm_sans"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Attendees Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,22 +112,21 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_search"
+                    android:src="@drawable/ic_users"
                     app:tint="@color/purple_main"
                     android:layout_marginEnd="8dp"/>
 
                 <TextView
-                    android:id="@+id/tvEventLocation"
+                    android:id="@+id/tvEventAttendees"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Location Name"
+                    android:text="142/300 attending"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="@font/dm_sans"
-                    android:maxLines="1"
-                    android:ellipsize="end" />
+                    android:textColor="@color/text_primary"
+                    android:fontFamily="@font/dm_sans" />
             </LinearLayout>
 
+            <!-- Price + Format Badge Row -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -105,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="₱650"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:fontFamily="@font/syne_bold"
@@ -117,8 +149,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="In-Person"
-                    android:textSize="12sp"
-                    android:textColor="@color/purple_light"
+                    android:textSize="11sp"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/dm_sans"
                     android:background="@drawable/btn_pill_purple"
                     android:paddingHorizontal="12dp"

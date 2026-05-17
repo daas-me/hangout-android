@@ -57,17 +57,25 @@ class PaymentProofBottomSheet : BottomSheetDialogFragment(), PaymentProofContrac
         }
     }
 
+    private var cameraOutputUri: Uri? = null
+
     private val cameraLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bitmap ->
-        if (bitmap != null) {
-            // Save bitmap to cache and use that URI
-            val file = File(requireContext().cacheDir, "proof_${System.currentTimeMillis()}.jpg")
-            file.outputStream().use {
-                bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 90, it)
-            }
-            handleImageSelected(Uri.fromFile(file))
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            cameraOutputUri?.let { handleImageSelected(it) }
         }
+    }
+
+    private fun openCamera() {
+        val file = File(requireContext().cacheDir, "proof_${System.currentTimeMillis()}.jpg")
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            requireContext(),
+            "${requireContext().packageName}.provider",  // must match your AndroidManifest FileProvider authority
+            file
+        )
+        cameraOutputUri = uri
+        cameraLauncher.launch(uri)
     }
 
     // ── Lifecycle ─────────────────────────────────────────────────────────
@@ -82,7 +90,6 @@ class PaymentProofBottomSheet : BottomSheetDialogFragment(), PaymentProofContrac
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Expand sheet fully by default
         (dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet))?.let {
             BottomSheetBehavior.from(it).state = BottomSheetBehavior.STATE_EXPANDED
         }
@@ -97,13 +104,16 @@ class PaymentProofBottomSheet : BottomSheetDialogFragment(), PaymentProofContrac
         binding.btnSubmit.setOnClickListener      { handleSubmit() }
         binding.btnCancel.setOnClickListener      { dismiss()      }
 
+        // Wire once here, not inside updateSubmitState()
+        binding.cbAcknowledge.setOnCheckedChangeListener { _, _ -> updateSubmitState() }
+
         binding.btnCopyAccount.setOnClickListener {
             val number = event?.accountNumber ?: return@setOnClickListener
             val cm = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             cm.setPrimaryClip(ClipData.newPlainText("account", number))
-            toast("Account number copied!")
         }
     }
+
 
     // ── Bind event data ───────────────────────────────────────────────────
 
@@ -142,16 +152,56 @@ class PaymentProofBottomSheet : BottomSheetDialogFragment(), PaymentProofContrac
         galleryLauncher.launch(intent)
     }
 
-    private fun openCamera() {
-        cameraLauncher.launch(null)
-    }
-
     private fun handleImageSelected(uri: Uri) {
+        // Check file size from URI metadata
+        val fileSizeBytes = try {
+            val cursor = requireContext().contentResolver.query(
+                uri, null, null, null, null
+            )
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val sizeIdx = it.getColumnIndex(android.provider.OpenableColumns.SIZE)
+                    if (sizeIdx >= 0) it.getLong(sizeIdx) else -1L
+                } else -1L
+            } ?: -1L
+        } catch (e: Exception) {
+            -1L
+        }
+
+        val minBytes = 10_240L      // 10 KB
+        val maxBytes = 10_485_760L  // 10 MB
+
+        if (fileSizeBytes in 1 until minBytes) {
+            val sizeKb = String.format("%.1f", fileSizeBytes / 1_024.0)
+            toast("Image too small (${sizeKb} KB) — please use a real screenshot")
+            return
+        }
+        if (fileSizeBytes > maxBytes) {
+            val sizeMb = String.format("%.1f", fileSizeBytes / 1_048_576.0)
+            toast("Image too large (${sizeMb} MB) — max 10 MB")
+            return
+        }
+
+        // Copy to cache  ← val file is declared HERE, not before
+        val file = try {
+            val path = copyUriToCache(requireContext(), uri) ?: run {
+                toast("Could not read image file")
+                return
+            }
+            File(path)
+        } catch (e: Exception) {
+            toast("Error reading file: ${e.localizedMessage}")
+            return
+        }
+
+        // Sanity check on the cached file  ← moved to AFTER val file exists
+        if (file.length() < minBytes) {
+            toast("Could not read the image — please try again")
+            return
+        }
+
         selectedImageUri = uri
-        Glide.with(this)
-            .load(uri)
-            .centerCrop()
-            .into(binding.ivPreview)
+        Glide.with(this).load(uri).centerCrop().into(binding.ivPreview)
         binding.layoutPreview.show()
         binding.layoutPickButtons.hide()
         updateSubmitState()
@@ -165,44 +215,60 @@ class PaymentProofBottomSheet : BottomSheetDialogFragment(), PaymentProofContrac
     }
 
     private fun handleSubmit() {
-        val uri = selectedImageUri ?: run {
-            toast("Please select a proof of payment first.")
+        val uri = selectedImageUri
+        if (uri == null) {
+            toast("Select an image first")
             return
         }
+
         if (event?.noRefundPolicy == true && !binding.cbAcknowledge.isChecked) {
-            toast("Please acknowledge the refund policy first.")
+            toast("Acknowledge policy first")
             return
         }
 
-        val path = copyUriToCache(requireContext(), uri) ?: run {
-            toast("Could not read image. Please try again.")
+        val eventId = event?.id
+        if (eventId == null || eventId <= 0) {
+            toast("Event error - please try again")
             return
         }
 
-        val eventId = event?.id ?: return
-        presenter.submitPaymentProof(eventId, File(path))
+        val path = copyUriToCache(requireContext(), uri)
+        if (path.isNullOrBlank()) {
+            toast("Failed to read image")
+            return
+        }
+
+        val file = File(path)
+        if (!file.exists()) {
+            toast("Image file not found")
+            return
+        }
+
+        presenter.submitPaymentProof(eventId, file)
     }
 
     private fun updateSubmitState() {
-        val hasImage     = selectedImageUri != null
-        val policyOk     = event?.noRefundPolicy != true || binding.cbAcknowledge.isChecked
-        binding.btnSubmit.isEnabled = hasImage && policyOk
-
-        binding.cbAcknowledge.setOnCheckedChangeListener { _, _ -> updateSubmitState() }
+        val hasImage = selectedImageUri != null
+        val policyOk = event?.noRefundPolicy != true || binding.cbAcknowledge.isChecked
+        val isEnabled = hasImage && policyOk
+        binding.btnSubmit.isEnabled = isEnabled
     }
 
     // ── PaymentProofContract.View ─────────────────────────────────────────
 
     override fun showLoading(show: Boolean) {
         binding.progressBar.isVisible = show
-        binding.btnSubmit.isEnabled   = !show
         binding.btnCancel.isEnabled   = !show
+        if (show) {
+            binding.btnSubmit.isEnabled = false
+        } else {
+            updateSubmitState()
+        }
     }
 
     override fun showMessage(message: String) = toast(message)
 
     override fun onSubmitSuccess() {
-        toast("Payment proof submitted! Waiting for host approval.")
         onSubmitSuccess?.invoke()
         dismiss()
     }

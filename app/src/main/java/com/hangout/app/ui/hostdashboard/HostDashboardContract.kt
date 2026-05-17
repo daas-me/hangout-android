@@ -1,5 +1,6 @@
 package com.hangout.app.ui.hostdashboard
 
+import android.net.Uri
 import com.hangout.app.data.AttendeeItem
 import com.hangout.app.data.EventItem
 
@@ -22,8 +23,19 @@ interface HostDashboardContract {
         fun assignSeat(eventId: Long, rsvpId: Long, seatNumber: String)
         fun confirmAttendee(eventId: Long, rsvpId: Long)
         fun rejectAttendee(eventId: Long, rsvpId: Long, reason: String)
+        fun markAttendance(eventId: Long, rsvpId: Long, status: String)
         fun cancelEvent(eventId: Long, reason: String)
         fun deleteEvent(eventId: Long)
+
+        /**
+         * Host marks a refund as processed.
+         * @param note      Optional reference note shown to the attendee (e.g. "GCash ref 12345").
+         * @param proofUri  URI of the refund-proof image selected from the device.
+         *                  Required for refundable paid events; null for events without proof upload.
+         */
+        fun approveRefund(eventId: Long, rsvpId: Long, note: String, proofUri: Uri?)
+
+        fun rejectRefund(eventId: Long, rsvpId: Long, reason: String)
         fun detachView()
     }
 }
