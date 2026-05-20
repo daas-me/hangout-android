@@ -164,8 +164,6 @@ class CreateEventPresenter(
                     view?.showLoading(false)
                     view?.showError(result.message)
                 }
-
-                is Result.Error -> TODO()
             }
         }
     }
